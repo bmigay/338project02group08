@@ -3,7 +3,8 @@ import java.sql.*;
 public class UserDataBase {
     private Connection connection;
 
-    public UserDataBase() {
+    public UserDat
+    aBase() {
         try {
             connection = DriverManager.getConnection("jdbc:sqlite:app.db");
             System.out.println("Database connected. ");
