@@ -3,8 +3,7 @@ import java.sql.*;
 public class UserDataBase {
     private Connection connection;
 
-    public UserDat
-    aBase() {
+    public UserDataBase() {
         try {
             connection = DriverManager.getConnection("jdbc:sqlite:app.db");
             System.out.println("Database connected. ");
@@ -16,9 +15,9 @@ public class UserDataBase {
 
     public void createTables() {
         String sql = """
-                CREATE TABLE IF DONT EXIST
-                name TEXT
-                score INT
+                CREATE TABLE IF NOT EXIST
+                users
+                (name TEXT, score INT)
                 """;
         try (Statement stmt = connection.createStatement()) {
             stmt.execute(sql);
@@ -29,7 +28,7 @@ public class UserDataBase {
     }
 
     public void insertItem(String name, int score) {
-        String sql = " INSERT INTO users (name ) VALUES (?, ?) ";
+        String sql = " INSERT INTO users (name, score) VALUES (?, ?) ";
         try (PreparedStatement pstmt = connection.prepareStatement(sql)) {
             pstmt.setString(1, name);
             pstmt.setInt(2, score);
@@ -44,7 +43,7 @@ public class UserDataBase {
             ResultSet rs = stmt.executeQuery(sql);
             String result = "";
             while (rs.next()){
-                result = result + rs.getString(" name ") + " - " + rs.getInt(" score" );
+                result = result + rs.getString("name") + " - " + rs.getInt("score" );
             }
             return result;
         } catch (Exception e){
@@ -59,7 +58,7 @@ public class UserDataBase {
             pstmt.setString(2, name);
             pstmt . executeUpdate () ;
         } catch (SQLException e ) {
-            System.err.println ( " markDone failed : " + e);
+            System.err.println ( " update failed : " + e);
         }
     }
     public void deleteUser (String name) {
