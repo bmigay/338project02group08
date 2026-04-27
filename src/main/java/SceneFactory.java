@@ -17,7 +17,7 @@ import org.w3c.dom.Text;
 public class SceneFactory {
 
     public static Scene create(SceneType type, Stage stage) {
-        return switch(type) {
+        return switch (type) {
             case LOGIN -> buildLoginScene(stage);
             case NEWUSER -> buildNewserScene(stage);
             case DASHBOARD -> buildDashboardScene(stage);
@@ -80,6 +80,12 @@ public class SceneFactory {
     }
 
     private static Scene buildCategories(Stage stage) {
-        return null;
+        Label tittle = new Label("Categories");
+
+        TextField newCategory = new TextField("Enter category");
+        Button add = new Button("Add");
+        VBox layout = new VBox();
+
+        return new Scene(layout, 600, 400);
     }
 }
