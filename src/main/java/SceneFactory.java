@@ -60,7 +60,9 @@ public class SceneFactory {
         Button leaderboard = new Button("View Leaderboard: ");
         Button pastScores = new Button("View Past Scores: ");
 
-
+        newGame.setOnAction(e -> {
+            System.out.println("New Game!");
+        });
 
         VBox layout = new VBox();
         layout.getChildren().addAll(title, newGame, leaderboard, pastScores);
