@@ -1,3 +1,4 @@
+import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
@@ -82,40 +83,50 @@ public class SceneFactory {
     static Scene buildGameScene(Stage stage) { //braeden
         Label title = new Label("Your Letter is <>");
         Label cat1 = new Label("Cat1");
-        TextField ans1 = new TextField("ans1");
+        TextField ans1 = new TextField("");
         HBox one = new HBox(cat1, ans1);
+        one.setAlignment(Pos.CENTER);
         Label cat2 = new Label("Cat2");
-        TextField ans2 = new TextField("ans2");
+        TextField ans2 = new TextField("");
         HBox two = new HBox(cat2, ans2);
+        two.setAlignment(Pos.CENTER);
         Label cat3 = new Label("Cat3");
-        TextField ans3 = new TextField("ans3");
+        TextField ans3 = new TextField("");
         HBox three = new HBox(cat3, ans3);
+        three.setAlignment(Pos.CENTER);
         Label cat4 = new Label("Cat4");
-        TextField ans4 = new TextField("ans4");
+        TextField ans4 = new TextField("");
         HBox four = new HBox(cat4, ans4);
+        four.setAlignment(Pos.CENTER);
         Label cat5 = new Label("Cat5");
-        TextField ans5 = new TextField("ans5");
+        TextField ans5 = new TextField("");
         HBox five = new HBox(cat5, ans5);
+        five.setAlignment(Pos.CENTER);
         Label cat6 = new Label("Cat6");
         TextField ans6 = new TextField("");
         HBox six = new HBox(cat6, ans6);
+        six.setAlignment(Pos.CENTER);
         Label cat7 = new Label("Cat7");
         TextField ans7 = new TextField("");
         HBox seven = new HBox(cat7, ans7);
+        seven.setAlignment(Pos.CENTER);
         Label cat8 = new Label("Cat8");
-        TextField ans8 = new TextField("ans8");
+        TextField ans8 = new TextField("");
         HBox eight = new HBox(cat8, ans8);
+        eight.setAlignment(Pos.CENTER);
         Label cat9 = new Label("Cat9");
-        TextField ans9 = new TextField("ans9");
+        TextField ans9 = new TextField("");
         HBox nine = new HBox(cat9, ans9);
+        nine.setAlignment(Pos.CENTER);
         Label cat10 = new Label("Cat10");
-        TextField ans10 = new TextField("ans10");
+        TextField ans10 = new TextField("");
         HBox ten = new HBox(cat10, ans10);
+        ten.setAlignment(Pos.CENTER);
 
-        VBox layout = new VBox(one, two, three, four, five, six, seven, eight, nine, ten);
+        VBox layout = new VBox(title, one, two, three, four, five, six, seven, eight, nine, ten);
+        layout.setAlignment(Pos.TOP_CENTER);
 
-
-        return new Scene(layout, 600, 400);
+        return new Scene(layout, 400, 600);
     }
 
     private static Scene buildLeaderboardScene(Stage stage) {
