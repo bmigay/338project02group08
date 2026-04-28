@@ -55,13 +55,6 @@ public class SceneFactory {
         return new Scene(layout, 600, 400);
     }
 
-<<<<<<< braeden/scene-game
-    private static Scene buildDashboardScene(Stage stage) { //kaissy
-        Label title = new Label("Welcome, User!");
-        Button newGame = new Button("New Game");
-        Button leaderboard = new Button("View Leaderboard");
-        Button pastScores = new Button("View Past Scores");
-=======
     private static Scene buildDashboardScene(Stage stage) {
         Label title = new Label("Welcome, User!: ");
         Button newGame = new Button("New Game: ");
@@ -71,7 +64,7 @@ public class SceneFactory {
         newGame.setOnAction(e -> {
             System.out.println("New Game!");
         });
->>>>>>> main
+
 
         VBox layout = new VBox();
         layout.getChildren().addAll(title, newGame, leaderboard, pastScores);
@@ -130,13 +123,6 @@ public class SceneFactory {
     }
 
     private static Scene buildLeaderboardScene(Stage stage) {
-<<<<<<< braeden/scene-game
-        return null;
-    } //kaissy
-
-    private static Scene buildCategories(Stage stage) { //estrella
-        return null;
-=======
         Label title = new Label ("Leaderboard");
 
         Label rank1 = new Label ("1. ");
@@ -172,6 +158,5 @@ public class SceneFactory {
         VBox layout = new VBox();
 
         return new Scene(layout, 600, 400);
->>>>>>> main
     }
 }
