@@ -7,6 +7,7 @@ import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import org.w3c.dom.Text;
 
+
 /**
  * This is the scene factory class for the Scattered Categories application
  *
@@ -17,7 +18,7 @@ import org.w3c.dom.Text;
 public class SceneFactory {
 
     public static Scene create(SceneType type, Stage stage) {
-        return switch(type) {
+        return switch (type) {
             case LOGIN -> buildLoginScene(stage);
             case NEWUSER -> buildNewuserScene(stage);
             case DASHBOARD -> buildDashboardScene(stage);
@@ -53,14 +54,27 @@ public class SceneFactory {
         return new Scene(layout, 600, 400);
     }
 
+<<<<<<< braeden/scene-game
     private static Scene buildDashboardScene(Stage stage) { //kaissy
         Label title = new Label("Welcome, User!");
         Button newGame = new Button("New Game");
         Button leaderboard = new Button("View Leaderboard");
         Button pastScores = new Button("View Past Scores");
+=======
+    private static Scene buildDashboardScene(Stage stage) {
+        Label title = new Label("Welcome, User!: ");
+        Button newGame = new Button("New Game: ");
+        Button leaderboard = new Button("View Leaderboard: ");
+        Button pastScores = new Button("View Past Scores: ");
+
+        newGame.setOnAction(e -> {
+            System.out.println("New Game!");
+        });
+>>>>>>> main
 
         VBox layout = new VBox();
         layout.getChildren().addAll(title, newGame, leaderboard, pastScores);
+
 
         return new Scene(layout, 600, 400);
     }
@@ -105,10 +119,48 @@ public class SceneFactory {
     }
 
     private static Scene buildLeaderboardScene(Stage stage) {
+<<<<<<< braeden/scene-game
         return null;
     } //kaissy
 
     private static Scene buildCategories(Stage stage) { //estrella
         return null;
+=======
+        Label title = new Label ("Leaderboard");
+
+        Label rank1 = new Label ("1. ");
+        Label rank2 = new Label ("2. ");
+        Label rank3 = new Label ("3. ");
+        Label rank4 = new Label ("4. ");
+        Label rank5 = new Label ("5. ");
+
+        Button backButton = new Button ("Return to Dashboard");
+        Button refreshButton = new Button("Refresh");
+
+        refreshButton.setOnAction(e -> {
+            System.out.println("In first place goes to...");;
+            System.out.println("In second place...");
+            System.out.println("In third...");
+        });
+
+
+
+        VBox layout = new VBox();
+        layout.getChildren().addAll(title, rank1, rank2, rank3, rank4, rank5, backButton, refreshButton);
+
+        // back button still needed
+
+        return new Scene(layout, 600,400);
+    }
+
+    private static Scene buildCategories(Stage stage) {
+        Label tittle = new Label("Categories");
+
+        TextField newCategory = new TextField("Enter category");
+        Button add = new Button("Add");
+        VBox layout = new VBox();
+
+        return new Scene(layout, 600, 400);
+>>>>>>> main
     }
 }
