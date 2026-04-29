@@ -64,6 +64,10 @@ public class SceneFactory {
             System.out.println("New Game!");
         });
 
+        leaderboard.setOnAction((e->{
+            stage.setScene((SceneFactory.create(SceneType.LEADERBOARD, stage)));
+        }));
+
         VBox layout = new VBox();
         layout.getChildren().addAll(title, newGame, leaderboard, pastScores);
 
