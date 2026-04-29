@@ -68,7 +68,7 @@ public class SceneFactory {
             return new Scene(layout, 600, 400);
         }
 
-        static Scene buildGameScene (Stage stage){ //braeden
+        private static Scene buildGameScene (Stage stage){ //braeden
             Label title = new Label("Your Letter is <>");
             Label cat1 = new Label("Cat1");
             TextField ans1 = new TextField("ans1");
