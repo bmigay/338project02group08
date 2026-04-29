@@ -82,11 +82,11 @@ public class SceneFactory {
     private static Scene buildLeaderboardScene(Stage stage) {
         Label title = new Label ("Leaderboard");
 
-        Label rank1 = new Label ("1. ");
-        Label rank2 = new Label ("2. ");
-        Label rank3 = new Label ("3. ");
-        Label rank4 = new Label ("4. ");
-        Label rank5 = new Label ("5. ");
+        Label rank1 = new Label ("1. Player 1: 1000 points");
+        Label rank2 = new Label ("2. PLayer 2: 900 points");
+        Label rank3 = new Label ("3. PLayer 3: 800 points");
+        Label rank4 = new Label ("4. PLayer 4: 400 points");
+        Label rank5 = new Label ("5. PLayer 5: 200 points");
 
         Button backButton = new Button ("Return to Dashboard");
         Button refreshButton = new Button("Refresh");
@@ -97,12 +97,12 @@ public class SceneFactory {
             System.out.println("In third...");
         });
 
-
+        backButton.setOnAction(e -> {
+            stage.setScene((SceneFactory.create(SceneType.DASHBOARD, stage)));});
 
         VBox layout = new VBox();
         layout.getChildren().addAll(title, rank1, rank2, rank3, rank4, rank5, backButton, refreshButton);
 
-        // back button still needed
 
         return new Scene(layout, 600,400);
     }
