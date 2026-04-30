@@ -1,5 +1,4 @@
 package com.daclink;
-
 import org.junit.jupiter.api.*;
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -10,14 +9,12 @@ public class DatabaseSQLiteTest {
     void setup() {
         db = new com.daclink.DatabaseSQLite();
     }
-
-    @Test //creating game (start)
+    @Test //creating game
     void testCreateGame() {
         db.createGame("testplayer", "S");
         assertTrue(true);
         System.out.println("testing CreateGame");
     }
-
     @Test //saving answers and updating scores
     void testSaveAnswerAndUpdateScore() {
         db.createGame("testplayer2", "A");
@@ -28,7 +25,6 @@ public class DatabaseSQLiteTest {
         assertTrue(true);
         System.out.println("testing SaveAnswerAndUpdateScore");
     }
-
     @Test
     void testGetPastScores() {
         db.createGame("scoreplayer", "B");
