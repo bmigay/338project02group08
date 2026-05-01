@@ -15,9 +15,11 @@ public class UserDataBase {
 
     public void createTables() {
         String sql = """
-                CREATE TABLE IF NOT EXIST
-                users
-                (name TEXT, score INT)
+                CREATE TABLE IF NOT EXISTS users (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                name TEXT NOT NULL,
+                score INTEGER NOT NULL DEFAULT 0
+                )
                 """;
         try (Statement stmt = connection.createStatement()) {
             stmt.execute(sql);
