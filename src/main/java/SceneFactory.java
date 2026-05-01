@@ -121,17 +121,16 @@ public class SceneFactory {
             Button refreshButton = new Button("Refresh");
 
             refreshButton.setOnAction(e -> {
-                System.out.println("In first place goes to...");
-                System.out.println("In second place...");
-                System.out.println("In third...");
+                System.out.println("Refreshing!");
             });
+            backButton.setOnAction(e -> {
+                stage.setScene(SceneFactory.create(SceneType.DASHBOARD, stage));
+            });
+
 
 
             VBox layout = new VBox();
             layout.getChildren().addAll(title, rank1, rank2, rank3, rank4, rank5, backButton, refreshButton);
-
-            // back button still needed
-
             return new Scene(layout, 600, 400);
         }
 
