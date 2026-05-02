@@ -172,8 +172,6 @@ public class SceneFactory {
             VBox layout = new VBox();
             layout.getChildren().addAll(title, rank1, rank2, rank3, rank4, rank5, backButton, refreshButton);
 
-            // back button still needed
-
             return new Scene(layout, 600, 400);
         }
 
