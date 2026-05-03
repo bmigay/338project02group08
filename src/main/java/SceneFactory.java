@@ -29,7 +29,7 @@ public class SceneFactory {
         };
     }
 
-    private static Scene buildLoginScene(Stage stage) { //estrella
+    private static Scene buildLoginScene(Stage stage) {//estrella
         Label title = new Label("Welcome to Scattered Categories!");
         TextField username = new TextField();
         username.setPromptText("username");
