@@ -1,0 +1,12 @@
+{
+  "animals": ["cat", "dog", "bird", "fish", "lion", "tiger", "bear", "fox", "wolf", "deer"],
+  "colors": ["red", "blue", "green", "yellow", "purple", "pink", "black", "white", "orange", "brown", "turquoise", "lavender"],
+  "foods": ["pizza", "pasta", "burger", "salad", "soup", "rice", "bread", "apple", "cake", "egg","taco","burrito", "cookie", "brownie", "enchiladas", "cereal"],
+  "bad habits": ["smoking", "gambling", "lying", "cheating", "gossiping", "overeating", "swearing", "laziness", "bragging", "shouting", "messiness", "messy"],
+  "politicians": ["trump", "biden", "obama", "clinton", "bush", "lincoln", "washington", "churchill", "merkel", "putin"],
+  "countries": ["canada", "mexico", "france", "germany", "japan", "brazil", "india", "australia", "china", "italy","unitedstates", "africa"],
+  "sports": ["soccer", "basketball", "tennis", "swimming", "baseball", "golf", "rugby", "boxing", "hockey", "volleyball"],
+  "movies": ["titanic", "avatar", "gladiator", "inception", "matrix", "frozen", "jaws", "rocky", "casablanca", "godfather", "insidious"],
+  "celebrities": ["beyonce", "taylorswift", "adele", "drake", "therock", "tomhanks", "leonardo", "angelina", "oprah", "elonmusk", "kanye"],
+  "cars": ["ford", "toyota", "honda", "chevy", "bmw", "mercedes", "audi", "tesla", "nissan", "hyundai"]
+}
