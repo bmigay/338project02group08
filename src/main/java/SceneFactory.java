@@ -78,110 +78,11 @@ public class SceneFactory {
         return new Scene(layout, 600, 400);
     }
 
-        private static Scene buildDashboardScene (Stage stage){
-            Label title = new Label("Welcome, User!: ");
-            Button newGame = new Button("New Game: ");
-            Button leaderboard = new Button("View Leaderboard: ");
-            Button pastScores = new Button("View Past Scores: ");
-
-            newGame.setOnAction(e -> {
-                System.out.println("New Game!");
-                Scene gameScene = SceneFactory.buildGameScene(stage);
-                stage.setScene(gameScene);
-            });
-
-            leaderboard.setOnAction(e -> {
-                Scene leaderboardScene = SceneFactory.buildLeaderboardScene(stage);
-                stage.setScene(leaderboardScene);
-            });
-
-            VBox layout = new VBox();
-            layout.getChildren().addAll(title, newGame, leaderboard, pastScores);
-            return new Scene(layout, 600, 400);
-        }
-
-        static Scene buildGameScene (Stage stage){ //braeden
-            Validator validator = new Validator();
-            String currentLetter = validator.getRandomLetter();
-            ArrayList<String> catagories = new ArrayList<>();
-            catagories.add("animals");
-            catagories.add("colors");
-            catagories.add("foods");
-            catagories.add("badHabits");
-            catagories.add("politicians");
-            catagories.add("countries");
-            catagories.add("sports");
-            catagories.add("movies");
-            catagories.add("celebrities");
-            catagories.add("cars");
-
-            Label title = new Label("Your Letter is " + currentLetter);
-            title.setAlignment(Pos.TOP_CENTER);
-            Label cat1 = new Label("Cat1");
-            TextField ans1 = new TextField("");
-            HBox one = new HBox(cat1, ans1);
-            one.setAlignment(Pos.CENTER);
-            Label cat2 = new Label("Cat2");
-            TextField ans2 = new TextField("");
-            HBox two = new HBox(cat2, ans2);
-            two.setAlignment(Pos.CENTER);
-            Label cat3 = new Label("Cat3");
-            TextField ans3 = new TextField("");
-            HBox three = new HBox(cat3, ans3);
-            three.setAlignment(Pos.CENTER);
-            Label cat4 = new Label("Cat4");
-            TextField ans4 = new TextField("");
-            HBox four = new HBox(cat4, ans4);
-            four.setAlignment(Pos.CENTER);
-            Label cat5 = new Label("Cat5");
-            TextField ans5 = new TextField("");
-            HBox five = new HBox(cat5, ans5);
-            five.setAlignment(Pos.CENTER);
-            Label cat6 = new Label("Cat6");
-            TextField ans6 = new TextField("");
-            HBox six = new HBox(cat6, ans6);
-            six.setAlignment(Pos.CENTER);
-            Label cat7 = new Label("Cat7");
-            TextField ans7 = new TextField("");
-            HBox seven = new HBox(cat7, ans7);
-            seven.setAlignment(Pos.CENTER);
-            Label cat8 = new Label("Cat8");
-            TextField ans8 = new TextField("");
-            HBox eight = new HBox(cat8, ans8);
-            eight.setAlignment(Pos.CENTER);
-            Label cat9 = new Label("Cat9");
-            TextField ans9 = new TextField("");
-            HBox nine = new HBox(cat9, ans9);
-            nine.setAlignment(Pos.CENTER);
-            Label cat10 = new Label("Cat10");
-            TextField ans10 = new TextField("");
-            HBox ten = new HBox(cat10, ans10);
-            ten.setAlignment(Pos.CENTER);
-
-            Label scoreLabel = new Label();
-
-            Button finish = new Button("Finish");
-            finish.setOnAction(event -> {
-            int score = 0;
-            TextField[] userAnswer = {ans1, ans2, ans3, ans4, ans5, ans6, ans7, ans8, ans9, ans10};
-            for (int i = 0; i < userAnswer.length; i++) {
-                if (validator.isValid(catagories.get(i), userAnswer[i].getText(), currentLetter)) {
-                    score += 10;
-                }
-            }
-
-            lastScore = score;
-            stage.setScene(SceneFactory.buildDashboardScene(stage));
-            });
-
-            VBox layout = new VBox(title, one, two, three, four, five, six, seven, eight, nine, ten, scoreLabel, finish);
-            layout.setAlignment(Pos.CENTER);
     private static Scene buildDashboardScene(Stage stage) {
         Label title = new Label("Welcome, User!: ");
         Button newGame = new Button("New Game: ");
         Button leaderboard = new Button("View Leaderboard: ");
         Button pastScores = new Button("View Past Scores: ");
-        Button categories = new Button("Categories");
 
         newGame.setOnAction(e -> {
             System.out.println("New Game!");
@@ -194,17 +95,27 @@ public class SceneFactory {
             stage.setScene(leaderboardScene);
         });
 
-        categories.setOnAction(e -> {
-            stage.setScene(SceneFactory.buildCategories(stage));
-        });
-
         VBox layout = new VBox();
-        layout.getChildren().addAll(title, newGame, leaderboard, pastScores, categories);
+        layout.getChildren().addAll(title, newGame, leaderboard, pastScores);
         return new Scene(layout, 600, 400);
     }
 
     static Scene buildGameScene(Stage stage) { //braeden
-        Label title = new Label("Your Letter is <>");
+        Validator validator = new Validator();
+        String currentLetter = validator.getRandomLetter();
+        ArrayList<String> catagories = new ArrayList<>();
+        catagories.add("animals");
+        catagories.add("colors");
+        catagories.add("foods");
+        catagories.add("badHabits");
+        catagories.add("politicians");
+        catagories.add("countries");
+        catagories.add("sports");
+        catagories.add("movies");
+        catagories.add("celebrities");
+        catagories.add("cars");
+
+        Label title = new Label("Your Letter is " + currentLetter);
         title.setAlignment(Pos.TOP_CENTER);
         Label cat1 = new Label("Cat1");
         TextField ans1 = new TextField("");
@@ -247,14 +158,24 @@ public class SceneFactory {
         HBox ten = new HBox(cat10, ans10);
         ten.setAlignment(Pos.CENTER);
 
+        Label scoreLabel = new Label();
+
         Button finish = new Button("Finish");
         finish.setOnAction(event -> {
+            int score = 0;
+            TextField[] userAnswer = {ans1, ans2, ans3, ans4, ans5, ans6, ans7, ans8, ans9, ans10};
+            for (int i = 0; i < userAnswer.length; i++) {
+                if (validator.isValid(catagories.get(i), userAnswer[i].getText(), currentLetter)) {
+                    score += 10;
+                }
+            }
+
+            lastScore = score;
             stage.setScene(SceneFactory.buildDashboardScene(stage));
         });
 
-        VBox layout = new VBox(title, one, two, three, four, five, six, seven, eight, nine, ten, finish);
+        VBox layout = new VBox(title, one, two, three, four, five, six, seven, eight, nine, ten, scoreLabel, finish);
         layout.setAlignment(Pos.CENTER);
-
         return new Scene(layout, 600, 400);
     }
 
