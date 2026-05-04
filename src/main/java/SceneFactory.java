@@ -8,6 +8,8 @@ import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import org.w3c.dom.Text;
 
+import java.util.ArrayList;
+
 
 /**
  * This is the scene factory class for the Scattered Categories application
@@ -17,6 +19,8 @@ import org.w3c.dom.Text;
  * @since: 4/20/26
  */
 public class SceneFactory {
+    private static int lastScore = 0;
+
 
     public static Scene create(SceneType type, Stage stage) {
         return switch (type) {
@@ -91,7 +95,21 @@ public class SceneFactory {
         }
 
         static Scene buildGameScene (Stage stage){ //braeden
-            Label title = new Label("Your Letter is <>");
+            Validator validator = new Validator();
+            String currentLetter = validator.getRandomLetter();
+            ArrayList<String> catagories = new ArrayList<>();
+            catagories.add("animals");
+            catagories.add("colors");
+            catagories.add("foods");
+            catagories.add("badHabits");
+            catagories.add("politicians");
+            catagories.add("countries");
+            catagories.add("sports");
+            catagories.add("movies");
+            catagories.add("celebrities");
+            catagories.add("cars");
+
+            Label title = new Label("Your Letter is " + currentLetter);
             title.setAlignment(Pos.TOP_CENTER);
             Label cat1 = new Label("Cat1");
             TextField ans1 = new TextField("");
@@ -134,12 +152,23 @@ public class SceneFactory {
             HBox ten = new HBox(cat10, ans10);
             ten.setAlignment(Pos.CENTER);
 
+            Label scoreLabel = new Label();
+
             Button finish = new Button("Finish");
             finish.setOnAction(event -> {
-                stage.setScene(SceneFactory.buildDashboardScene(stage));
+            int score = 0;
+            TextField[] userAnswer = {ans1, ans2, ans3, ans4, ans5, ans6, ans7, ans8, ans9, ans10};
+            for (int i = 0; i < userAnswer.length; i++) {
+                if (validator.isValid(catagories.get(i), userAnswer[i].getText(), currentLetter)) {
+                    score += 10;
+                }
+            }
+
+            lastScore = score;
+            stage.setScene(SceneFactory.buildDashboardScene(stage));
             });
 
-            VBox layout = new VBox(title, one, two, three, four, five, six, seven, eight, nine, ten, finish);
+            VBox layout = new VBox(title, one, two, three, four, five, six, seven, eight, nine, ten, scoreLabel, finish);
             layout.setAlignment(Pos.CENTER);
 
             return new Scene(layout, 600, 400);
