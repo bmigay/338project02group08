@@ -102,11 +102,23 @@ public class SceneFactory {
     }
 
     private static Scene buildDashboardScene(Stage stage) {
-        Label title = new Label("Welcome, User!: ");
-        Button newGame = new Button("New Game: ");
-        Button leaderboard = new Button("View Leaderboard: ");
-        Button pastScores = new Button("View Past Scores: ");
+        Label title = new Label("Welcome, User!");
+        title.setStyle("-fx-font-size: 24px; -fx-text-fill: white;");
+
+        Button newGame = new Button("New Game");
+        Button leaderboard = new Button("View Leaderboard");
+        Button pastScores = new Button("View Past Scores");
         Button categories = new Button("Categories");
+
+        newGame.setMaxWidth(200);
+        leaderboard.setMaxWidth(200);
+        pastScores.setMaxWidth(200);
+        categories.setMaxWidth(200);
+
+        newGame.setStyle("-fx-font-size: 16px;");
+        leaderboard.setStyle("-fx-font-size: 16px;");
+        pastScores.setStyle("-fx-font-size: 16px;");
+        categories.setStyle("-fx-font-size: 16px;");
 
         newGame.setOnAction(e -> {
             System.out.println("New Game!");
@@ -125,6 +137,9 @@ public class SceneFactory {
         });
 
         VBox layout = new VBox();
+        layout.setSpacing(15);
+        layout.setAlignment(Pos.CENTER);
+        layout.setStyle("-fx-background-color: mediumpurple;");
         layout.getChildren().addAll(title, newGame, leaderboard, pastScores, categories);
         return new Scene(layout, 600, 400);
     }
