@@ -85,7 +85,7 @@ public class SceneFactory {
         PasswordField repeat = new PasswordField();
         repeat.setPromptText("repeat password");
         repeat.setStyle("-fx-font-size: 16px;");
-        password.setMaxWidth(200);
+        repeat.setMaxWidth(200);
 
 
         Button login = new Button("Login");
@@ -96,7 +96,7 @@ public class SceneFactory {
         });
 
         VBox layout = new VBox();
-        layout.getChildren().addAll(title, username, password, login, repeat);
+        layout.getChildren().addAll(title, username, password, repeat, login);
 
         return new Scene(layout, 600, 400);
     }
