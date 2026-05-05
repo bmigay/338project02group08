@@ -10,6 +10,7 @@ import java.awt.SystemTray;
 
 
 import java.util.ArrayList;
+import java.util.Collections;
 
 
 /**
@@ -153,57 +154,96 @@ public class SceneFactory {
     static Scene buildGameScene(Stage stage) { //braeden
         Validator validator = new Validator();
         String currentLetter = validator.getRandomLetter();
-        ArrayList<String> catagories = new ArrayList<>();
-        catagories.add("animals");
-        catagories.add("colors");
-        catagories.add("foods");
-        catagories.add("badHabits");
-        catagories.add("politicians");
-        catagories.add("countries");
-        catagories.add("sports");
-        catagories.add("movies");
-        catagories.add("celebrities");
-        catagories.add("cars");
+        ArrayList<String> categories = new ArrayList<>();
+        categories.add("animals");
+        categories.add("colors");
+        categories.add("foods");
+        categories.add("badHabits");
+        categories.add("politicians");
+        categories.add("countries");
+        categories.add("sports");
+        categories.add("movies");
+        categories.add("celebrities");
+        categories.add("cars");
+        categories.add("fruits");
+        categories.add("vegetables");
+        categories.add("holidays");
+        categories.add("book titles");
+        categories.add("song titles");
+        categories.add("occupations");
+        categories.add("brand names");
+        categories.add("things in classroom");
+        categories.add("things at beach");
+        categories.add("things that are cold");
+        categories.add("things that are hot");
+        categories.add("tv shows");
+        categories.add("girl names");
+        categories.add("boy names");
+        categories.add("cities");
+        categories.add("rivers");
+        categories.add("mountains");
+        categories.add("insects");
+        categories.add("birds");
+        categories.add("fish");
+        categories.add("flowers");
+        categories.add("furniture");
+        categories.add("kitchen items");
+        categories.add("bathroom items");
+        categories.add("tools");
+        categories.add("sports teams");
+        categories.add("school subjects");
+        categories.add("body parts");
+        categories.add("emotions");
+        categories.add("weather words");
+        categories.add("drinks");
+        categories.add("desserts");
+        Collections.shuffle(categories);
+        ArrayList<String> chosenCategories = new ArrayList<>(categories.subList(0, 10));
+
+
+
+
 
         Label title = new Label("Your Letter is " + currentLetter);
         title.setAlignment(Pos.TOP_CENTER);
-        Label cat1 = new Label("Cat1");
+
+        Label cat1 = new Label(chosenCategories.get(0));
         TextField ans1 = new TextField("");
         HBox one = new HBox(cat1, ans1);
         one.setAlignment(Pos.CENTER);
-        Label cat2 = new Label("Cat2");
+        Label cat2 = new Label(chosenCategories.get(1));
         TextField ans2 = new TextField("");
         HBox two = new HBox(cat2, ans2);
         two.setAlignment(Pos.CENTER);
-        Label cat3 = new Label("Cat3");
+        Label cat3 = new Label(chosenCategories.get(2));
         TextField ans3 = new TextField("");
         HBox three = new HBox(cat3, ans3);
         three.setAlignment(Pos.CENTER);
-        Label cat4 = new Label("Cat4");
+        Label cat4 = new Label(chosenCategories.get(3));
         TextField ans4 = new TextField("");
         HBox four = new HBox(cat4, ans4);
         four.setAlignment(Pos.CENTER);
-        Label cat5 = new Label("Cat5");
+        Label cat5 = new Label(chosenCategories.get(4));
         TextField ans5 = new TextField("");
         HBox five = new HBox(cat5, ans5);
         five.setAlignment(Pos.CENTER);
-        Label cat6 = new Label("Cat6");
+        Label cat6 = new Label(chosenCategories.get(5));
         TextField ans6 = new TextField("");
         HBox six = new HBox(cat6, ans6);
         six.setAlignment(Pos.CENTER);
-        Label cat7 = new Label("Cat7");
+        Label cat7 = new Label(chosenCategories.get(6));
         TextField ans7 = new TextField("");
         HBox seven = new HBox(cat7, ans7);
         seven.setAlignment(Pos.CENTER);
-        Label cat8 = new Label("Cat8");
+        Label cat8 = new Label(chosenCategories.get(7));
         TextField ans8 = new TextField("");
         HBox eight = new HBox(cat8, ans8);
         eight.setAlignment(Pos.CENTER);
-        Label cat9 = new Label("Cat9");
+        Label cat9 = new Label(chosenCategories.get(8));
         TextField ans9 = new TextField("");
         HBox nine = new HBox(cat9, ans9);
         nine.setAlignment(Pos.CENTER);
-        Label cat10 = new Label("Cat10");
+        Label cat10 = new Label(chosenCategories.get(9));
         TextField ans10 = new TextField("");
         HBox ten = new HBox(cat10, ans10);
         ten.setAlignment(Pos.CENTER);
@@ -215,7 +255,7 @@ public class SceneFactory {
             int score = 0;
             TextField[] userAnswer = {ans1, ans2, ans3, ans4, ans5, ans6, ans7, ans8, ans9, ans10};
             for (int i = 0; i < userAnswer.length; i++) {
-                if (validator.isValid(catagories.get(i), userAnswer[i].getText(), currentLetter)) {
+                if (validator.isValid(categories.get(i), userAnswer[i].getText(), currentLetter)) {
                     score += 10;
                 }
             }
