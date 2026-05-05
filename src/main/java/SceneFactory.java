@@ -35,16 +35,26 @@ public class SceneFactory {
 
     private static Scene buildLoginScene(Stage stage) {//estrella
         Label title = new Label("Welcome to Scattered Categories!");
+        title.setStyle("-fx-font-size: 24px; -fx-text-fill: white;");
         TextField username = new TextField();
         username.setPromptText("username");
+        username.setMaxWidth(200);
+        username.setStyle("-fx-font-size: 16px;");
+
         PasswordField password = new PasswordField();
         password.setPromptText("password");
+        password.setMaxWidth(200);
+        password.setStyle("-fx-font-size: 16px;");
 
         Label message = new Label();
         Button login = new Button("Login");
         Button newuser = new Button("New User?");
 
         VBox layout = new VBox();
+        layout.setSpacing(10);
+        layout.setAlignment(Pos.CENTER);
+        layout.setStyle("-fx-background-color: mediumpurple;");
+
         layout.getChildren().addAll(title, username, password, message, login, newuser);
         login.setOnAction(event -> {
 
@@ -62,9 +72,22 @@ public class SceneFactory {
 
     private static Scene buildNewuserScene(Stage stage) { //braeden
         Label title = new Label("Create your account!");
-        TextField username = new TextField("username");
-        TextField password = new TextField("password");
-        TextField repeat = new TextField("repeat password");
+        title.setStyle("-fx-font-size: 24px;");
+        TextField username = new TextField();
+        username.setPromptText("username");
+        username.setMaxWidth(200);
+        username.setStyle("-fx-font-size: 16px;");
+
+        PasswordField password = new PasswordField();
+        password.setPromptText("password");
+        password.setMaxWidth(200);
+        password.setStyle("-fx-font-size: 16px;");
+        PasswordField repeat = new PasswordField();
+        repeat.setPromptText("repeat password");
+        repeat.setStyle("-fx-font-size: 16px;");
+        password.setMaxWidth(200);
+
+
         Button login = new Button("Login");
 
         login.setOnAction(event -> {
