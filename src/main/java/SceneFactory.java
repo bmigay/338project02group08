@@ -60,6 +60,15 @@ public class SceneFactory {
             Button leaderboard = new Button("View Leaderboard: ");
             Button pastScores = new Button("View Past Scores: ");
 
+            Label displayScore = new Label();
+            if (lastScore > 0){
+                displayScore.setText("Last score " + lastScore + " points!");
+                displayScore.setStyle("-fx-font-size: 14px; -fx-text-fill: white;");
+            } else {
+                displayScore.setText("No games played yet. Start a new game!");
+                displayScore.setStyle("-fx-font-size: 14px; -fx-font-style: red;");
+            }
+
             newGame.setOnAction(e -> {
                 stage.setScene(SceneFactory.create(SceneType.GAME, stage));
             });
