@@ -6,7 +6,8 @@ import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import org.w3c.dom.Text;
+import java.awt.SystemTray;
+
 
 import java.util.ArrayList;
 
@@ -91,6 +92,11 @@ public class SceneFactory {
         Button login = new Button("Login");
 
         login.setOnAction(event -> {
+            Alert alert = new Alert(Alert.AlertType.INFORMATION);
+            alert.setTitle("Account Created");
+            alert.setContentText("Account Successfully Created");
+            alert.showAndWait();
+
             Scene dashboard = SceneFactory.buildDashboardScene(stage);
             stage.setScene(dashboard);
         });
