@@ -36,6 +36,7 @@ public class SceneFactory {
     }
 
     private static Scene buildLoginScene(Stage stage) {//estrella
+        UserDataBase db = new UserDataBase();
         Label title = new Label("Welcome to Scattered Categories!");
         title.setStyle("-fx-font-size: 24px; -fx-text-fill: white;");
         TextField username = new TextField();
@@ -52,27 +53,33 @@ public class SceneFactory {
         Button login = new Button("Login");
         Button newuser = new Button("New User?");
 
-        VBox layout = new VBox();
-        layout.setSpacing(10);
-        layout.setAlignment(Pos.CENTER);
-        layout.setStyle("-fx-background-color: mediumpurple;");
-
-        layout.getChildren().addAll(title, username, password, message, login, newuser);
         login.setOnAction(event -> {
-
             if (username.getText().equals("") || password.getText().equals("")) {
-                message.setText("enter username and password");
+                message.setText("Enter username and password");
             } else {
-                stage.setScene(SceneFactory.buildDashboardScene(stage));
+                if (db.validateLogin(username.getText(), password.getText())) {
+                    stage.setScene(SceneFactory.buildDashboardScene(stage));
+                } else {
+                    message.setText("Invalid username or password");
+                }
             }
         });
+
         newuser.setOnAction(event -> {
             stage.setScene(SceneFactory.buildNewuserScene(stage));
         });
+        VBox layout = new VBox();
+
+        layout.setSpacing(10);
+        layout.setAlignment(Pos.CENTER);
+        layout.setStyle("-fx-background-color: mediumpurple;");
+        layout.getChildren().addAll(title, username, password, message, login, newuser);
         return new Scene(layout, 600, 400);
     }
 
     private static Scene buildNewuserScene(Stage stage) { //braeden
+        UserDataBase db = new UserDataBase();
+        Label message = new Label();
         Label title = new Label("Create your account!");
         title.setStyle("-fx-font-size: 24px;");
         TextField username = new TextField();
@@ -89,24 +96,29 @@ public class SceneFactory {
         repeat.setStyle("-fx-font-size: 16px;");
         repeat.setMaxWidth(200);
 
-
-        Button login = new Button("Login");
-
+        Button login = new Button("Create Account");
         login.setOnAction(event -> {
-            Alert alert = new Alert(Alert.AlertType.INFORMATION);
-            alert.setTitle("Account Created");
-            alert.setContentText("Account Successfully Created");
-            alert.showAndWait();
-
-            Scene dashboard = SceneFactory.buildDashboardScene(stage);
-            stage.setScene(dashboard);
+            if (username.getText().equals("") || password.getText().equals("") || repeat.getText().equals("")) {
+                message.setText("Fill all fields");
+            } else if (!password.getText().equals(repeat.getText())) {
+                message.setText("Passwords do not match");
+            } else {
+                db.insertItem(username.getText(), password.getText(), 0);
+                message.setText("account created successfully!");
+                stage.setScene(SceneFactory.buildLoginScene(stage));
+            }
         });
-
         VBox layout = new VBox();
-        layout.getChildren().addAll(title, username, password, repeat, login);
 
+        layout.setSpacing(10);
+        layout.setAlignment(Pos.CENTER);
+        layout.setStyle("-fx-background-color: mediumpurple;");
+        message.setStyle("-fx-text-fill: white;");
+        layout.getChildren().addAll(title, username, password, repeat, message, login
+        );
         return new Scene(layout, 600, 400);
     }
+
     private static Scene buildDashboardScene(Stage stage) {
         Label title = new Label("Welcome, User!");
         title.setStyle("-fx-font-size: 24px; -fx-text-fill: white;");
