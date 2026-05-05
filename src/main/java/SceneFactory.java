@@ -83,6 +83,7 @@ public class SceneFactory {
         Button newGame = new Button("New Game: ");
         Button leaderboard = new Button("View Leaderboard: ");
         Button pastScores = new Button("View Past Scores: ");
+        Button categories = new Button("Categories");
 
         newGame.setOnAction(e -> {
             System.out.println("New Game!");
@@ -93,10 +94,15 @@ public class SceneFactory {
         leaderboard.setOnAction(e -> {
             Scene leaderboardScene = SceneFactory.buildLeaderboardScene(stage);
             stage.setScene(leaderboardScene);
+
+        });
+
+        categories.setOnAction(e -> {
+            stage.setScene(SceneFactory.buildCategories(stage));
         });
 
         VBox layout = new VBox();
-        layout.getChildren().addAll(title, newGame, leaderboard, pastScores);
+        layout.getChildren().addAll(title, newGame, leaderboard, pastScores, categories);
         return new Scene(layout, 600, 400);
     }
 
