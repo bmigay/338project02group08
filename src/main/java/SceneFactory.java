@@ -1,3 +1,4 @@
+import com.daclink.DatabaseSQLite;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
@@ -22,6 +23,9 @@ import java.util.Collections;
  */
 public class SceneFactory {
     private static int lastScore = 0;
+    private static com.daclink.DatabaseSQLite db = new DatabaseSQLite();
+    private static String currentUsername;
+    private static int currentGameId = -1;
 
 
     public static Scene create(SceneType type, Stage stage) {
@@ -152,6 +156,10 @@ public class SceneFactory {
             stage.setScene(SceneFactory.buildCategories(stage));
         });
 
+        pastScores.setOnAction(e -> {
+            stage.setScene(SceneFactory.buildLeaderboardScene(stage));
+        });
+
         VBox layout = new VBox();
         layout.setSpacing(15);
         layout.setAlignment(Pos.CENTER);
@@ -163,6 +171,7 @@ public class SceneFactory {
     static Scene buildGameScene(Stage stage) { //braeden
         Validator validator = new Validator();
         String currentLetter = validator.getRandomLetter();
+
         ArrayList<String> categories = new ArrayList<>();
         categories.add("animals");
         categories.add("colors");
@@ -253,8 +262,6 @@ public class SceneFactory {
         HBox ten = new HBox(cat10, ans10);
         ten.setAlignment(Pos.CENTER);
 
-        Label scoreLabel = new Label();
-
         Button finish = new Button("Finish");
         finish.setOnAction(event -> {
             int score = 0;
@@ -266,10 +273,11 @@ public class SceneFactory {
             }
 
             lastScore = score;
+            db.createGame(currentUsername, currentLetter, lastScore);
             stage.setScene(SceneFactory.buildDashboardScene(stage));
         });
 
-        VBox layout = new VBox(title, one, two, three, four, five, six, seven, eight, nine, ten, scoreLabel, finish);
+        VBox layout = new VBox(title, one, two, three, four, five, six, seven, eight, nine, ten, finish);
         layout.setAlignment(Pos.CENTER);
         return new Scene(layout, 600, 400);
     }
