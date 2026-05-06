@@ -138,15 +138,6 @@ public class SceneFactory {
         pastScores.setStyle("-fx-font-size: 16px;");
         categories.setStyle("-fx-font-size: 16px;");
 
-        Label displayScore = new Label();
-        if (lastScore > 0){
-            displayScore.setText("Last score " + lastScore + " points!");
-            displayScore.setStyle("-fx-font-size: 14px; -fx-text-fill: white;");
-        } else {
-            displayScore.setText("No games played yet. Start a new game!");
-            displayScore.setStyle("-fx-font-size: 14px; -fx-font-style: red;");
-        }
-
         newGame.setOnAction(e -> {
             System.out.println("New Game!");
             Scene gameScene = SceneFactory.buildGameScene(stage);
@@ -219,6 +210,10 @@ public class SceneFactory {
         categories.add("desserts");
         Collections.shuffle(categories);
         ArrayList<String> chosenCategories = new ArrayList<>(categories.subList(0, 10));
+
+
+
+
 
         Label title = new Label("Your Letter is " + currentLetter);
         title.setAlignment(Pos.TOP_CENTER);
