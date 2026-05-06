@@ -1,5 +1,4 @@
 package com.daclink;
-
 import java.sql.*;
 
 public class DatabaseSQLite {
@@ -33,10 +32,10 @@ public class DatabaseSQLite {
         }
     }
 
-    public void createGame(String username, String letter) {
+    public void createGame(String username, String letter, int score) {
         try {
             Statement stmt = connection.createStatement();
-            String sql = "INSERT INTO games (user_name, game_date, total_score, letter_used) " + "VALUES ('" + username + "', datetime('now'), 0, '" + letter + "')";
+            String sql = "INSERT INTO games (user_name, game_date, total_score, letter_used) " + "VALUES ('" + username + "', datetime('now'), 0, '" + score + ", " + letter + "')";
             stmt.execute(sql);
         } catch (Exception e) {
             System.out.println("createGame error: " + e);

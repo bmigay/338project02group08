@@ -18,6 +18,7 @@ public class UserDataBase {
                 CREATE TABLE IF NOT EXISTS users (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
                 name TEXT NOT NULL,
+                password TEXT NOT NULL,
                 score INTEGER NOT NULL DEFAULT 0
                 )
                 """;
@@ -26,44 +27,59 @@ public class UserDataBase {
         } catch (SQLException e) {
             System.err.println("createTables failed: " + e);
         }
-
     }
 
-    public void insertItem(String name, int score) {
-        String sql = " INSERT INTO users (name, score) VALUES (?, ?) ";
+    public void insertItem(String name, String password, int score) {
+        String sql = " INSERT INTO users (name, password, score) VALUES (?, ?, ?) ";
         try (PreparedStatement pstmt = connection.prepareStatement(sql)) {
             pstmt.setString(1, name);
-            pstmt.setInt(2, score);
+            pstmt.setString(2, password);
+            pstmt.setInt(3, score);
             pstmt.executeUpdate();
         } catch (SQLException e) {
             System.err.println(" insertItem failed : " + e.getMessage());
         }
     }
-    public String getUsers(){
+
+    public boolean validateLogin(String name, String password) {
+        String sql = "SELECT * FROM users WHERE name = ? AND password = ?";
+        try (PreparedStatement pstmt = connection.prepareStatement(sql)) {
+            pstmt.setString(1, name);
+            pstmt.setString(2, password);
+            ResultSet rs = pstmt.executeQuery();
+            return rs.next();
+        } catch (SQLException e) {
+            System.out.println("validateLogin failed: " + e);
+            return false;
+        }
+    }
+
+    public String getUsers() {
         String sql = "SELECT * FROM users";
         try (Statement stmt = connection.createStatement()) {
             ResultSet rs = stmt.executeQuery(sql);
             String result = "";
-            while (rs.next()){
-                result = result + rs.getString("name") + " - " + rs.getInt("score" );
+            while (rs.next()) {
+                result = result + rs.getString("name") + " - " + rs.getInt("score") + "\n";
             }
             return result;
-        } catch (Exception e){
+        } catch (Exception e) {
             return "Error";
         }
     }
 
-    public void updateScore (int newScore, String name ) {
-        String sql = " UPDATE users SET score = ? WHERE name = ? " ;
-        try ( PreparedStatement pstmt = connection . prepareStatement ( sql ) ) {
+    public void updateScore(int newScore, String name) {
+        String sql = " UPDATE users SET score = ? WHERE name = ? ";
+        try (PreparedStatement pstmt = connection.prepareStatement(sql)) {
             pstmt.setInt(1, newScore);
             pstmt.setString(2, name);
-            pstmt . executeUpdate () ;
-        } catch (SQLException e ) {
-            System.err.println ( " update failed : " + e);
+            pstmt.executeUpdate();
+        } catch (SQLException e) {
+            System.err.println(" update failed : " + e);
         }
     }
-    public void deleteUser (String name) {
+
+    public void deleteUser(String name) {
         String sql = " DELETE FROM users WHERE name = ? ";
         try (PreparedStatement pstmt = connection.prepareStatement(sql)) {
             pstmt.setString(1, name);
