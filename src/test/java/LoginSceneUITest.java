@@ -1,3 +1,4 @@
+package com.daclink;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 import org.junit.jupiter.api.BeforeEach;

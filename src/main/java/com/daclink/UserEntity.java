@@ -1,3 +1,4 @@
+package com.daclink;
 public class UserEntity {
     private int id;
     private String username;

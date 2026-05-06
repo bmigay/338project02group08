@@ -18,11 +18,11 @@ public class DatabaseSQLite {
     public void createTables() {
         try {
             Statement stmt = connection.createStatement();
-            String usersTable = "CREATE TABLE IF NOT EXISTS users (" + "id INTEGER PRIMARY KEY AUTOINCREMENT, " + "name TEXT, " + "score INTEGER)";
+            // String usersTable = "CREATE TABLE IF NOT EXISTS users (" + "id INTEGER PRIMARY KEY AUTOINCREMENT, " + "name TEXT, " + "score INTEGER)";
             String gamesTable = "CREATE TABLE IF NOT EXISTS games (" + "game_id INTEGER PRIMARY KEY AUTOINCREMENT, " + "user_name TEXT, " + "game_date TEXT, " + "total_score INTEGER, " + "letter_used TEXT)";
             String answersTable = "CREATE TABLE IF NOT EXISTS answers (" + "answer_id INTEGER PRIMARY KEY AUTOINCREMENT, " + "game_id INTEGER, " + "round_number INTEGER, " + "category TEXT, " + "player_answer TEXT, " + "points_earned INTEGER)";
 
-            stmt.execute(usersTable);
+            // stmt.execute(usersTable);
             stmt.execute(gamesTable);
             stmt.execute(answersTable);
 
