@@ -96,7 +96,6 @@ public class SceneFactory {
             alert.setTitle("Account Created");
             alert.setContentText("Account Successfully Created");
             alert.showAndWait();
-
             Scene dashboard = SceneFactory.buildDashboardScene(stage);
             stage.setScene(dashboard);
         });
