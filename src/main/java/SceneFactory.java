@@ -20,6 +20,12 @@ import java.util.Collections;
 public class SceneFactory {
 
     private static int lastScore = 0;
+    private static String currentUsername = "";
+    private static UserDataBase userDb = new UserDataBase();
+    private static com.daclink.DatabaseSQLite Sdb = new com.daclink.DatabaseSQLite();
+
+
+    private static int lastScore = 0;
 
     public static Scene create(SceneType type, Stage stage) {
 
@@ -30,49 +36,44 @@ public class SceneFactory {
             case LEADERBOARD -> buildLeaderboardScene(stage);
             case GAME -> buildGameScene(stage);
             case CATEGORIES -> buildCategories(stage);
+            case PASTSCORES -> buildPastScoresScene(stage);
         };
     }
-
-    private static Scene buildLoginScene(Stage stage) {//estrella
+    private static Scene buildLoginScene(Stage stage) { //estrella
         UserDataBase db = new UserDataBase();
         Label title = new Label("Welcome to Scattered Categories!");
         title.setStyle("-fx-font-size: 24px; -fx-text-fill: white;");
+
         TextField username = new TextField();
+        username.setId("usernameField");
         username.setPromptText("username");
         username.setMaxWidth(200);
-        username.setStyle("-fx-font-size: 16px;");
 
         PasswordField password = new PasswordField();
+        password.setId("passwordField");
         password.setPromptText("password");
         password.setMaxWidth(200);
-        password.setStyle("-fx-font-size: 16px;");
-
         Label message = new Label();
         Button login = new Button("Login");
         Button newuser = new Button("New User?");
 
         login.setOnAction(event -> {
-            if (username.getText().equals("") || password.getText().equals("")) {
+            if (username.getText().isEmpty() || password.getText().isEmpty()) {
                 message.setText("Enter username and password");
+            } else if (db.validateLogin(username.getText(), password.getText())) {
+                currentUsername = username.getText();
+                stage.setScene(SceneFactory.buildDashboardScene(stage));
             } else {
-                if (db.validateLogin(username.getText(), password.getText())) {
-                    stage.setScene(SceneFactory.buildDashboardScene(stage));
-                } else {
-                    message.setText("Invalid username or password");
-                }
+                message.setText("Invalid username or password");
             }
         });
-
         newuser.setOnAction(event -> {
             stage.setScene(SceneFactory.buildNewuserScene(stage));
         });
 
-        VBox layout = new VBox();
-
-        layout.setSpacing(10);
+        VBox layout = new VBox(10, title, username, password, message, login, newuser);
         layout.setAlignment(Pos.CENTER);
         layout.setStyle("-fx-background-color: mediumpurple;");
-        layout.getChildren().addAll(title, username, password, message, login, newuser);
         return new Scene(layout, 600, 400);
     }
 
@@ -113,14 +114,21 @@ public class SceneFactory {
         layout.setAlignment(Pos.CENTER);
         layout.setStyle("-fx-background-color: mediumpurple;");
         message.setStyle("-fx-text-fill: white;");
-        layout.getChildren().addAll(title, username, password, repeat, message, login
-        );
+        layout.getChildren().addAll(title, username, password, repeat, message, login);
         return new Scene(layout, 600, 400);
     }
 
     private static Scene buildDashboardScene(Stage stage) {
-        Label title = new Label("Welcome, User!");
+        Label title = new Label("Welcome, " + currentUsername + "!");
         title.setStyle("-fx-font-size: 24px; -fx-text-fill: white;");
+        Label scoreDisplay = new Label();
+        if (lastScore>0) {
+            scoreDisplay.setText("Last Score: " + lastScore + " points!");
+            scoreDisplay.setStyle("-fx-font-size: 16px; -fx-text-fill: white;");
+        } else {
+            scoreDisplay.setText("No games played yet. Start a new game!");
+            scoreDisplay.setStyle("-fx-font-size: 16px; -fx-text-fill: white;");
+        }
 
         Button newGame = new Button("New Game");
         Button leaderboard = new Button("View Leaderboard");
@@ -152,17 +160,19 @@ public class SceneFactory {
         categories.setOnAction(e -> {
             stage.setScene(SceneFactory.buildCategories(stage));
         });
+        pastScores.setOnAction((e-> {
+            stage.setScene(SceneFactory.buildPastScoresScene(stage));
+        }));
 
         VBox layout = new VBox();
         layout.setSpacing(15);
         layout.setAlignment(Pos.CENTER);
         layout.setStyle("-fx-background-color: mediumpurple;");
-        layout.getChildren().addAll(title, newGame, leaderboard, pastScores, categories);
+        layout.getChildren().addAll(title, newGame, leaderboard, pastScores, categories, scoreDisplay);
         return new Scene(layout, 600, 400);
     }
 
     static Scene buildGameScene(Stage stage) {
-
         Validator validator = new Validator();
 
         String currentLetter = validator.getRandomLetter();
@@ -217,57 +227,73 @@ public class SceneFactory {
         ArrayList<String> chosenCategories = new ArrayList<>(categories.subList(0, 10));
 
         Label title = new Label("Your Letter is " + currentLetter);
+        title.setStyle("-fx-font-size: 24px; -fx-font-weight: bold;");
+        title.setStyle("-fx-text-fill: white;");
+
+        ArrayList<String> chosenCategories = new ArrayList<>(categories.subList(0, 10));
+
+        Label title = new Label("Your Letter is " + currentLetter);
 
         title.setAlignment(Pos.TOP_CENTER);
 
         Label cat1 = new Label(chosenCategories.get(0));
         TextField ans1 = new TextField("");
-        HBox one = new HBox(cat1, ans1);
+        HBox one = new HBox(20,cat1, ans1);
+        cat1.setStyle("-fx-text-fill: white;");
         one.setAlignment(Pos.CENTER);
 
         Label cat2 = new Label(chosenCategories.get(1));
         TextField ans2 = new TextField("");
-        HBox two = new HBox(cat2, ans2);
+        HBox two = new HBox(20,cat2, ans2);
+        cat2.setStyle("-fx-text-fill: white;");
         two.setAlignment(Pos.CENTER);
 
         Label cat3 = new Label(chosenCategories.get(2));
         TextField ans3 = new TextField("");
-        HBox three = new HBox(cat3, ans3);
+        cat3.setStyle("-fx-text-fill: white;");
+        HBox three = new HBox(20,cat3, ans3);
         three.setAlignment(Pos.CENTER);
 
         Label cat4 = new Label(chosenCategories.get(3));
         TextField ans4 = new TextField("");
-        HBox four = new HBox(cat4, ans4);
+        HBox four = new HBox(20,cat4, ans4);
+        cat4.setStyle("-fx-text-fill: white;");
         four.setAlignment(Pos.CENTER);
 
         Label cat5 = new Label(chosenCategories.get(4));
         TextField ans5 = new TextField("");
-        HBox five = new HBox(cat5, ans5);
+        HBox five = new HBox(20,cat5, ans5);
+        cat5.setStyle("-fx-text-fill: white;");
         five.setAlignment(Pos.CENTER);
 
         Label cat6 = new Label(chosenCategories.get(5));
         TextField ans6 = new TextField("");
-        HBox six = new HBox(cat6, ans6);
+        HBox six = new HBox(20,cat6, ans6);
+        cat6.setStyle("-fx-text-fill: white;");
         six.setAlignment(Pos.CENTER);
 
         Label cat7 = new Label(chosenCategories.get(6));
         TextField ans7 = new TextField("");
-        HBox seven = new HBox(cat7, ans7);
+        HBox seven = new HBox(20,cat7, ans7);
+        cat7.setStyle("-fx-text-fill: white;");
         seven.setAlignment(Pos.CENTER);
 
         Label cat8 = new Label(chosenCategories.get(7));
         TextField ans8 = new TextField("");
-        HBox eight = new HBox(cat8, ans8);
+        HBox eight = new HBox(20,cat8, ans8);
+        cat8.setStyle("-fx-text-fill: white;");
         eight.setAlignment(Pos.CENTER);
 
         Label cat9 = new Label(chosenCategories.get(8));
         TextField ans9 = new TextField("");
-        HBox nine = new HBox(cat9, ans9);
+        HBox nine = new HBox(20,cat9, ans9);
+        cat9.setStyle("-fx-text-fill: white;");
         nine.setAlignment(Pos.CENTER);
 
         Label cat10 = new Label(chosenCategories.get(9));
         TextField ans10 = new TextField("");
-        HBox ten = new HBox(cat10, ans10);
+        HBox ten = new HBox(20,cat10, ans10);
+        cat10.setStyle("-fx-text-fill: white;");
         ten.setAlignment(Pos.CENTER);
 
         Button finish = new Button("Finish");
@@ -277,9 +303,7 @@ public class SceneFactory {
             int score = 0;
 
             TextField[] userAnswer = {ans1, ans2, ans3, ans4, ans5, ans6, ans7, ans8, ans9, ans10 };
-
             for (int i = 0; i < userAnswer.length; i++) {
-
                 if (validator.isValid(chosenCategories.get(i), userAnswer[i].getText(), currentLetter)) {
                     score += 10;
                 }
@@ -296,32 +320,7 @@ public class SceneFactory {
         return new Scene(layout, 600, 400);
     }
 
-    private static Scene buildLeaderboardScene (Stage stage) {
-        //kaissy
-        Label title = new Label("Leaderboard");
-
-        Label rank1 = new Label("1. ");
-        Label rank2 = new Label("2. ");
-        Label rank3 = new Label("3. ");
-        Label rank4 = new Label("4. ");
-        Label rank5 = new Label("5. ");
-
-        Button backButton = new Button("Return to Dashboard");
-
-        backButton.setOnAction(e -> {
-            stage.setScene(SceneFactory.buildDashboardScene(stage));
-        });
-
-        backButton.setOnAction(e -> {
-            stage.setScene(SceneFactory.buildDashboardScene(stage));
-        });
-
-
-        VBox layout = new VBox();
-        layout.getChildren().addAll(title, rank1, rank2, rank3, rank4, rank5, backButton);
-        return new Scene(layout, 600, 400);
-    }
-
+    
         private static Scene buildCategories (Stage stage){ // estrella
             Label title = new Label("Categories");
             TextField newCategory = new TextField();
@@ -349,4 +348,78 @@ public class SceneFactory {
             layout.getChildren().addAll(title, newCategory, add, categoryList, back);
             return new Scene(layout, 600, 400);
     }
+}
+            Sdb.createGame(currentUsername, currentLetter, lastScore);
+
+            stage.setScene(SceneFactory.buildDashboardScene(stage));
+        });
+
+        VBox layout = new VBox(title, one, two, three, four, five, six, seven, eight, nine, ten, finish);
+        layout.setAlignment(Pos.CENTER);
+        layout.setStyle("-fx-background-color: mediumpurple; -fx-padding: 25px;");
+        return new Scene(layout, 600, 400);
+    }
+
+    private static Scene buildLeaderboardScene(Stage stage) {
+        Label title = new Label("LEADERBOARD");
+        title.setStyle("-fx-font-size: 24px; -fx-font-weight: bold;");
+
+        TextArea leaderboardText = new TextArea();
+        leaderboardText.setEditable(false);
+        leaderboardText.setPrefHeight(300);
+        leaderboardText.setStyle("-fx-font-size: 16px; -fx-font-family: monospace;");
+
+
+        String leaderboardData = Sdb.getLeaderboard();
+        leaderboardText.setText(leaderboardData);
+
+        Button backButton = new Button("Return to Dashboard");
+        backButton.setOnAction(e -> {
+            stage.setScene(SceneFactory.buildDashboardScene(stage));
+        });
+
+        Button refreshButton = new Button("Refresh");
+        refreshButton.setOnAction(e -> {
+            String refreshedData = Sdb.getLeaderboard();
+            leaderboardText.setText(refreshedData);
+        });
+
+        VBox layout = new VBox(10);
+        layout.setAlignment(Pos.CENTER);
+        layout.setStyle("-fx-background-color: mediumpurple; -fx-padding: 25px;");
+        layout.getChildren().addAll(title, leaderboardText, backButton);
+        return new Scene(layout, 600, 400);
+    }
+    private static Scene buildPastScoresScene(Stage stage){
+        Label title = new Label ("PAST SCORES - " + currentUsername);
+        title.setStyle("-fx-font-size: 24px; -fx-font-weight: bold;");
+
+        TextArea pastScoresText = new TextArea();
+        pastScoresText.setEditable(false);
+        pastScoresText.setPrefHeight(350);
+        pastScoresText.setStyle("-fx-font-size: 16px; -fx-font-family: monospace;");
+
+        String pastScoresData = Sdb.getPastScores(currentUsername);
+        pastScoresText.setText(pastScoresData);
+
+        Button backButton = new Button("Back to Dashboard");
+        backButton.setOnAction(e -> {
+            stage.setScene(SceneFactory.buildDashboardScene(stage));
+        });
+
+        Button refreshButton = new Button("Refresh");
+        refreshButton.setStyle("-fx-font-size: 14px; -fx-padding: 8px;");
+        refreshButton.setOnAction(e -> {
+            String refreshedData = Sdb.getPastScores(currentUsername);
+            pastScoresText.setText(refreshedData);
+        });
+
+
+        VBox layout = new VBox(10);
+        layout.setAlignment(Pos.CENTER);
+        layout.setStyle("-fx-background-color: mediumpurple; -fx-padding: 25px;");
+        layout.getChildren().addAll(title, pastScoresText, refreshButton, backButton);
+        return new Scene(layout, 600, 500);
+    }
+
 }

@@ -9,13 +9,13 @@ public class Validator {
     private HashMap<String, List<String>> wordBank;
     private Random random;
 
-    public Validator(){
+    public Validator() {
         wordBank = new HashMap<>();
         random = new Random();
         loadWordsFromFile();
     }
 
-    public String getRandomLetter(){
+    public String getRandomLetter() {
         ArrayList<String> letters = new ArrayList<>();
         letters.add("A");
         letters.add("B");
@@ -47,16 +47,17 @@ public class Validator {
 
     private void loadWordsFromFile() {
         try {
-            FileReader fr = new FileReader("words.json");
+            FileReader fr = new FileReader("src/main/resources/words.json");
             Gson gson = new Gson();
             wordBank = gson.fromJson(fr, HashMap.class);
             System.out.println("Complete!");
-        } catch (Exception e){
-            System.out.println("Error"+ e + "!");
+        } catch (Exception e) {
+            System.out.println("Error" + e + "!");
             System.out.println("Using backup now!");
             BackUpWords();
         }
     }
+
     private void BackUpWords() {
         wordBank = new HashMap<>();
         ArrayList<String> animals = new ArrayList<>();
@@ -146,32 +147,33 @@ public class Validator {
         wordBank.put("cars", cars);
     }
 
-        public boolean isValid (String category, String answer, String letter){
-        if (answer == null || answer.equals("")){
+    public boolean isValid(String category, String answer, String letter) {
+        if (answer == null || answer.equals("")) {
             return false;
         }
 
         String cleanAnswer = answer.toLowerCase();
         cleanAnswer = cleanAnswer.replace(" ", "");
 
-        if(cleanAnswer.equals("")){
+        if (cleanAnswer.equals("")) {
             return false;
         }
 
-        String firstLet = cleanAnswer.substring(0,1);
-        if (!firstLet.equals(letter.toLowerCase())){
+        String firstLet = cleanAnswer.substring(0, 1);
+        if (!firstLet.equals(letter.toLowerCase())) {
             return false;
         }
-        List <String> validWords = wordBank.get(category.toLowerCase());
-        if (validWords == null){
+        List<String> validWords = wordBank.get(category.toLowerCase());
+        if (validWords == null) {
             return false;
         }
-        for (int i = 0; i < validWords.size(); i++){
+        for (int i = 0; i < validWords.size(); i++) {
             String word = validWords.get(i);
-            if(word.equals(cleanAnswer)){
+            if (word.equals(cleanAnswer)) {
                 return true;
             }
         }
         return false;
-        }
+    }
 }
+
