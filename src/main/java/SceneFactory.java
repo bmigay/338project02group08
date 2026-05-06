@@ -59,7 +59,6 @@ public class SceneFactory {
                 message.setText("Invalid username or password");
             }
         });
-
         newuser.setOnAction(event -> {
             stage.setScene(SceneFactory.buildNewuserScene(stage));
         });
