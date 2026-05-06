@@ -25,8 +25,10 @@ public class SceneFactory {
     private static com.daclink.DatabaseSQLite Sdb = new com.daclink.DatabaseSQLite();
 
 
+    private static int lastScore = 0;
 
     public static Scene create(SceneType type, Stage stage) {
+
         return switch (type) {
             case LOGIN -> buildLoginScene(stage);
             case NEWUSER -> buildNewuserScene(stage);
@@ -172,7 +174,9 @@ public class SceneFactory {
 
     static Scene buildGameScene(Stage stage) {
         Validator validator = new Validator();
+
         String currentLetter = validator.getRandomLetter();
+
         ArrayList<String> categories = new ArrayList<>();
 
         categories.add("animals");
@@ -226,6 +230,9 @@ public class SceneFactory {
         title.setStyle("-fx-font-size: 24px; -fx-font-weight: bold;");
         title.setStyle("-fx-text-fill: white;");
 
+        ArrayList<String> chosenCategories = new ArrayList<>(categories.subList(0, 10));
+
+        Label title = new Label("Your Letter is " + currentLetter);
 
         title.setAlignment(Pos.TOP_CENTER);
 
@@ -302,6 +309,46 @@ public class SceneFactory {
                 }
             }
             lastScore = score;
+            stage.setScene(
+                    SceneFactory.buildDashboardScene(stage));
+        });
+
+        VBox layout = new VBox(title, one, two, three, four, five, six, seven, eight, nine, ten, finish);
+
+        layout.setAlignment(Pos.CENTER);
+
+        return new Scene(layout, 600, 400);
+    }
+
+    
+        private static Scene buildCategories (Stage stage){ // estrella
+            Label title = new Label("Categories");
+            TextField newCategory = new TextField();
+            newCategory.setPromptText("Enter category");
+
+            Button add = new Button("Add");
+            Button back = new Button("Back");
+                ObservableList<String> categories = FXCollections.observableArrayList();
+                ListView<String> categoryList = new ListView<>();
+                categoryList.setItems(categories);
+                add.setOnAction(e -> {
+                    String text = newCategory.getText();
+
+                if (!text.equals("")) {
+                    categories.add(text);
+                    newCategory.clear();
+                }
+            });
+            back.setOnAction(e -> {
+                stage.setScene(SceneFactory.buildDashboardScene(stage));
+            });
+            VBox layout = new VBox();
+            layout.setSpacing(10);
+
+            layout.getChildren().addAll(title, newCategory, add, categoryList, back);
+            return new Scene(layout, 600, 400);
+    }
+}
             Sdb.createGame(currentUsername, currentLetter, lastScore);
 
             stage.setScene(SceneFactory.buildDashboardScene(stage));
@@ -375,31 +422,4 @@ public class SceneFactory {
         return new Scene(layout, 600, 500);
     }
 
-    private static Scene buildCategories (Stage stage){ // estrella
-        Label title = new Label("Categories");
-        TextField newCategory = new TextField();
-        newCategory.setPromptText("Enter category");
-
-        Button add = new Button("Add");
-        Button back = new Button("Back");
-        ObservableList<String> categories = FXCollections.observableArrayList();
-        ListView<String> categoryList = new ListView<>();
-        categoryList.setItems(categories);
-        add.setOnAction(e -> {
-            String text = newCategory.getText();
-
-            if (!text.equals("")) {
-                categories.add(text);
-                newCategory.clear();
-            }
-        });
-        back.setOnAction(e -> {
-            stage.setScene(SceneFactory.buildDashboardScene(stage));
-        });
-        VBox layout = new VBox();
-        layout.setSpacing(10);
-
-        layout.getChildren().addAll(title, newCategory, add, categoryList, back);
-        return new Scene(layout, 600, 400);
-    }
 }
