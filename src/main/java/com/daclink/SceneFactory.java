@@ -104,6 +104,13 @@ public class SceneFactory {
             } else {
                 db.insertItem(username.getText(), password.getText(), 0);
                 message.setText("account created successfully!");
+
+                //alert notification
+                Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                alert.setTitle("Success");
+                alert.setHeaderText(null);
+                alert.setContentText("Account created successfully!");
+                alert.showAndWait();
                 stage.setScene(SceneFactory.buildLoginScene(stage));
             }
         });
