@@ -39,8 +39,5 @@ public class ValidatorTest {
         Validator validator = new Validator();
         assertTrue(validator.isValid("countries", "united states", "U"));
         assertTrue(validator.isValid("celebrities", "taylor swift", "T"));
-
-
     }
-
 }
