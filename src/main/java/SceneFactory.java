@@ -32,34 +32,31 @@ public class SceneFactory {
             case CATEGORIES -> buildCategories(stage);
         };
     }
-
-    private static Scene buildLoginScene(Stage stage) {//estrella
+    private static Scene buildLoginScene(Stage stage) { //estrella
         UserDataBase db = new UserDataBase();
         Label title = new Label("Welcome to Scattered Categories!");
         title.setStyle("-fx-font-size: 24px; -fx-text-fill: white;");
+
         TextField username = new TextField();
+        username.setId("usernameField");
         username.setPromptText("username");
         username.setMaxWidth(200);
-        username.setStyle("-fx-font-size: 16px;");
 
         PasswordField password = new PasswordField();
+        password.setId("passwordField");
         password.setPromptText("password");
         password.setMaxWidth(200);
-        password.setStyle("-fx-font-size: 16px;");
-
         Label message = new Label();
         Button login = new Button("Login");
         Button newuser = new Button("New User?");
 
         login.setOnAction(event -> {
-            if (username.getText().equals("") || password.getText().equals("")) {
+            if (username.getText().isEmpty() || password.getText().isEmpty()) {
                 message.setText("Enter username and password");
+            } else if (db.validateLogin(username.getText(), password.getText())) {
+                stage.setScene(SceneFactory.buildDashboardScene(stage));
             } else {
-                if (db.validateLogin(username.getText(), password.getText())) {
-                    stage.setScene(SceneFactory.buildDashboardScene(stage));
-                } else {
-                    message.setText("Invalid username or password");
-                }
+                message.setText("Invalid username or password");
             }
         });
 
@@ -67,12 +64,9 @@ public class SceneFactory {
             stage.setScene(SceneFactory.buildNewuserScene(stage));
         });
 
-        VBox layout = new VBox();
-
-        layout.setSpacing(10);
+        VBox layout = new VBox(10, title, username, password, message, login, newuser);
         layout.setAlignment(Pos.CENTER);
         layout.setStyle("-fx-background-color: mediumpurple;");
-        layout.getChildren().addAll(title, username, password, message, login, newuser);
         return new Scene(layout, 600, 400);
     }
 

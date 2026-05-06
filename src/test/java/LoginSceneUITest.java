@@ -23,9 +23,9 @@ public class LoginSceneUITest extends ApplicationTest {
 
     @Test
     void loginTransitionsToDashboard() {
-        clickOn((javafx.scene.control.TextField) lookup(".text-field").query());
+        clickOn("#usernameField");
         write("estrella");
-        clickOn((javafx.scene.control.PasswordField) lookup(".password-field").query());
+        clickOn("#passwordField");
         write("1234");
         clickOn("Login");
         verifyThat("New Game", isVisible());
