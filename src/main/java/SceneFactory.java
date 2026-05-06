@@ -22,7 +22,7 @@ public class SceneFactory {
     private static int lastScore = 0;
     private static String currentUsername = "";
     private static UserDataBase userDb = new UserDataBase();
-
+    private static com.daclink.DatabaseSQLite Sdb = new com.daclink.DatabaseSQLite();
 
 
 
@@ -300,19 +300,27 @@ public class SceneFactory {
     }
 
     private static Scene buildLeaderboardScene(Stage stage) {
-        Label title = new Label("Leaderboard");
+        Label title = new Label("LEADERBOARD");
         title.setStyle("-fx-font-size: 24px; -fx-font-weight: bold;");
 
         TextArea leaderboardText = new TextArea();
         leaderboardText.setEditable(false);
         leaderboardText.setPrefHeight(300);
+        leaderboardText.setStyle("-fx-font-size: 16px; -fx-font-family: monospace;");
 
-        // String leaderboardData = db.getLeaderboard();
-        // leaderboardText.setText(leaderboardData);
+
+        String leaderboardData = Sdb.getLeaderboard();
+        leaderboardText.setText(leaderboardData);
 
         Button backButton = new Button("Return to Dashboard");
         backButton.setOnAction(e -> {
             stage.setScene(SceneFactory.buildDashboardScene(stage));
+        });
+
+        Button refreshButton = new Button("Refresh");
+        refreshButton.setOnAction(e -> {
+            String refreshedData = Sdb.getLeaderboard();
+            leaderboardText.setText(refreshedData);
         });
 
         VBox layout = new VBox(10);
