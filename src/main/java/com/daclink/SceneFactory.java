@@ -8,6 +8,9 @@ import javafx.stage.Stage;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.Collections;
 
@@ -35,6 +38,9 @@ public class SceneFactory {
             case GAME -> buildGameScene(stage);
             case CATEGORIES -> buildCategories(stage);
             case PASTSCORES -> buildPastScoresScene(stage);
+            case ADMIN_DASHBOARD -> buildAdminDashboardScene(stage);
+            case MANAGE_USERS -> buildManageUsersScene(stage);
+
         };
     }
 
@@ -61,7 +67,11 @@ public class SceneFactory {
                 message.setText("Enter username and password");
             } else if (db.validateLogin(username.getText(), password.getText())) {
                 currentUsername = username.getText();
+                if (db.isAdmin(currentUsername)) {
+                    stage.setScene(SceneFactory.buildAdminDashboardScene(stage));
+                } else {
                 stage.setScene(SceneFactory.buildDashboardScene(stage));
+            }
             } else {
                 message.setText("Invalid username or password");
             }
@@ -412,5 +422,161 @@ public class SceneFactory {
         layout.setStyle("-fx-background-color: mediumpurple; -fx-padding: 25px;");
         layout.getChildren().addAll(title, pastScoresText, refreshButton, backButton);
         return new Scene(layout, 600, 500);
+    }
+    private static Scene buildAdminDashboardScene(Stage stage) {
+        Label title = new Label("Admin Dashboard");
+        title.setStyle("-fx-font-size: 28px; -fx-font-weight: bold; -fx-text-fill: white;");
+
+        Label welcomeLabel = new Label("Welcome, " + currentUsername + " (Administrator)");
+        welcomeLabel.setStyle("-fx-font-size: 18px; -fx-text-fill: white;");
+
+        VBox statsBox = new VBox(10);
+        statsBox.setStyle("-fx-background-color: rgba(255,255,255,0.1); -fx-padding: 15px; -fx-border-radius: 10px;");
+
+        Label statsTitle = new Label("System Statistics");
+        statsTitle.setStyle("-fx-font-size: 18px; -fx-font-weight: bold; -fx-text-fill: white;");
+
+        int totalUsers = AdminDatabase.getTotalUsers();
+        int totalGames = AdminDatabase.getTotalGames();
+        double avgScore = AdminDatabase.getAverageScore();
+
+        Label userCountLabel = new Label("Total Users: " + totalUsers);
+        userCountLabel.setStyle("-fx-text-fill: white;");
+        Label gameCountLabel = new Label("Total Games Played: " + totalGames);
+        gameCountLabel.setStyle("-fx-text-fill: white;");
+        Label avgScoreLabel = new Label("Average Score: " + String.format("%.1f", avgScore));
+        avgScoreLabel.setStyle("-fx-text-fill: white;");
+
+        statsBox.getChildren().addAll(statsTitle, userCountLabel, gameCountLabel, avgScoreLabel);
+
+        Button manageUsersBtn = new Button("Manage Users");
+        Button resetDatabaseBtn = new Button("Reset Database");
+        Button backToDashboardBtn = new Button("Back to User Dashboard");
+        Button logoutBtn = new Button("Logout");
+
+        manageUsersBtn.setStyle("-fx-font-size: 14px; -fx-pref-width: 200px; -fx-pref-height: 40px;");
+        resetDatabaseBtn.setStyle("-fx-font-size: 14px; -fx-pref-width: 200px; -fx-pref-height: 40px;");
+        backToDashboardBtn.setStyle("-fx-font-size: 14px; -fx-pref-width: 200px; -fx-pref-height: 40px;");
+        logoutBtn.setStyle("-fx-font-size: 14px; -fx-pref-width: 200px; -fx-pref-height: 40px;");
+
+
+        manageUsersBtn.setOnAction(e -> {
+            stage.setScene(SceneFactory.buildManageUsersScene(stage));
+        });
+
+
+        resetDatabaseBtn.setOnAction(e -> {
+            AdminDatabase.resetGameData();
+        });
+
+        backToDashboardBtn.setOnAction(e -> {
+            stage.setScene(SceneFactory.buildDashboardScene(stage));
+        });
+
+        logoutBtn.setOnAction(e -> {
+            currentUsername = "";
+            lastScore = 0;
+            stage.setScene(SceneFactory.buildLoginScene(stage));
+        });
+
+        VBox buttonBox = new VBox(10);
+        buttonBox.setAlignment(Pos.CENTER);
+        buttonBox.getChildren().addAll( manageUsersBtn, resetDatabaseBtn, backToDashboardBtn, logoutBtn);
+
+        VBox layout = new VBox(20);
+        layout.setAlignment(Pos.CENTER);
+        layout.setStyle("-fx-background-color: mediumpurple; -fx-padding: 30px;");
+        layout.getChildren().addAll(title, welcomeLabel, statsBox, buttonBox);
+
+        return new Scene(layout, 600, 400);
+    }
+
+    private static Scene buildManageUsersScene(Stage stage) {
+        UserDataBase userDb = new UserDataBase();
+        Label title = new Label("Manage Users");
+        title.setStyle("-fx-font-size: 24px; -fx-font-weight: bold; -fx-text-fill: white;");
+
+        ListView<String> usersList = new ListView<>();
+        AdminDatabase.refreshUserList(usersList);
+        usersList.setPrefHeight(300);
+
+        TextField usernameField = new TextField();
+        usernameField.setPromptText("Username");
+        usernameField.setMaxWidth(200);
+
+        TextField scoreField = new TextField();
+        scoreField.setPromptText("Score");
+        scoreField.setMaxWidth(200);
+
+        Button deleteUserBtn = new Button("Delete Selected User");
+        Button makeAdminBtn = new Button("Make Admin");
+        Button removeAdminBtn = new Button("Remove Admin");
+        Button updateScoreBtn = new Button("Update Score");
+        Button refreshBtn = new Button("Refresh List");
+        Button backBtn = new Button("Back to Admin Dashboard");
+
+        deleteUserBtn.setStyle("-fx-font-size: 14px; -fx-pref-width: 180px;");
+        makeAdminBtn.setStyle("-fx-font-size: 14px; -fx-pref-width: 180px;");
+        removeAdminBtn.setStyle("-fx-font-size: 14px; -fx-pref-width: 180px;");
+        updateScoreBtn.setStyle("-fx-font-size: 14px; -fx-pref-width: 180px;");
+        refreshBtn.setStyle("-fx-font-size: 14px; -fx-pref-width: 180px;");
+        backBtn.setStyle("-fx-font-size: 14px; -fx-pref-width: 180px;");
+
+        deleteUserBtn.setOnAction(e -> {
+            String selected = usersList.getSelectionModel().getSelectedItem();
+            if (selected != null && !selected.startsWith("admin")) {
+                String username = selected.split(" - ")[0];
+                userDb.deleteUser(username);
+                AdminDatabase.refreshUserList(usersList);
+            }
+        });
+
+        makeAdminBtn.setOnAction(e -> {
+            String selected = usersList.getSelectionModel().getSelectedItem();
+            if (selected != null) {
+                String username = selected.split(" - ")[0];
+                userDb.makeAdmin(username);
+                AdminDatabase.refreshUserList(usersList);
+            }
+        });
+
+        removeAdminBtn.setOnAction(e -> {
+            String selected = usersList.getSelectionModel().getSelectedItem();
+            if (selected != null && !selected.startsWith("admin")) {
+                String username = selected.split(" - ")[0];
+                userDb.removeAdmin(username);
+                AdminDatabase.refreshUserList(usersList);
+            }
+        });
+
+        updateScoreBtn.setOnAction(e -> {
+            String selected = usersList.getSelectionModel().getSelectedItem();
+            if (selected != null && !scoreField.getText().isEmpty()) {
+                try {
+                    String username = selected.split(" - ")[0];
+                    int newScore = Integer.parseInt(scoreField.getText());
+                    userDb.updateScore(newScore, username);
+                    AdminDatabase.refreshUserList(usersList);
+                    scoreField.clear();
+                } catch (NumberFormatException ex) {
+
+                }
+            }
+        });
+
+        refreshBtn.setOnAction(e ->  AdminDatabase.refreshUserList(usersList));
+        backBtn.setOnAction(e -> stage.setScene(SceneFactory.buildAdminDashboardScene(stage)));
+
+        HBox actionBox = new HBox(10);
+        actionBox.setAlignment(Pos.CENTER);
+        actionBox.getChildren().addAll(deleteUserBtn, makeAdminBtn, removeAdminBtn);
+
+        VBox layout = new VBox(15);
+        layout.setAlignment(Pos.CENTER);
+        layout.setStyle("-fx-background-color: mediumpurple; -fx-padding: 25px;");
+        layout.getChildren().addAll(title, usersList, usernameField, scoreField, actionBox,
+                updateScoreBtn, refreshBtn, backBtn);
+
+        return new Scene(layout, 700, 600);
     }
 }
