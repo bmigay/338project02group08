@@ -13,5 +13,7 @@ public enum SceneType {
     LEADERBOARD,
     NEWUSER,
     CATEGORIES,
-    PASTSCORES
+    PASTSCORES,
+    ADMIN_DASHBOARD,
+    MANAGE_USERS
 }
