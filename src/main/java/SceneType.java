@@ -11,5 +11,6 @@ public enum SceneType {
     GAME,
     LEADERBOARD,
     NEWUSER,
-    CATEGORIES
+    CATEGORIES,
+    ADMIN_DASHBOARD
 }
