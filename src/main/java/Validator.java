@@ -47,7 +47,7 @@ public class Validator {
 
     private void loadWordsFromFile() {
         try {
-            FileReader fr = new FileReader("words.json");
+            FileReader fr = new FileReader("src/main/resources/words.json");
             Gson gson = new Gson();
             wordBank = gson.fromJson(fr, HashMap.class);
             System.out.println("Complete!");
