@@ -6,11 +6,9 @@ import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import java.awt.SystemTray;
-
 
 import java.util.ArrayList;
-
+import java.util.Collections;
 
 /**
  * This is the scene factory class for the Scattered Categories application
@@ -20,7 +18,12 @@ import java.util.ArrayList;
  * @since: 4/20/26
  */
 public class SceneFactory {
+
     private static int lastScore = 0;
+    private static String currentUsername = "";
+    private static UserDataBase userDb = new UserDataBase();
+    private static com.daclink.DatabaseSQLite Sdb = new com.daclink.DatabaseSQLite();
+
 
 
     public static Scene create(SceneType type, Stage stage) {
@@ -31,47 +34,50 @@ public class SceneFactory {
             case LEADERBOARD -> buildLeaderboardScene(stage);
             case GAME -> buildGameScene(stage);
             case CATEGORIES -> buildCategories(stage);
+            case PASTSCORES -> buildPastScoresScene(stage);
         };
     }
-
-    private static Scene buildLoginScene(Stage stage) {//estrella
+    private static Scene buildLoginScene(Stage stage) { //estrella
+        UserDataBase db = new UserDataBase();
         Label title = new Label("Welcome to Scattered Categories!");
         title.setStyle("-fx-font-size: 24px; -fx-text-fill: white;");
+
         TextField username = new TextField();
+        username.setId("usernameField");
         username.setPromptText("username");
         username.setMaxWidth(200);
-        username.setStyle("-fx-font-size: 16px;");
 
         PasswordField password = new PasswordField();
+        password.setId("passwordField");
         password.setPromptText("password");
         password.setMaxWidth(200);
-        password.setStyle("-fx-font-size: 16px;");
-
         Label message = new Label();
         Button login = new Button("Login");
         Button newuser = new Button("New User?");
 
-        VBox layout = new VBox();
-        layout.setSpacing(10);
-        layout.setAlignment(Pos.CENTER);
-        layout.setStyle("-fx-background-color: mediumpurple;");
-
-        layout.getChildren().addAll(title, username, password, message, login, newuser);
         login.setOnAction(event -> {
-
-            if (username.getText().equals("") || password.getText().equals("")) {
-                message.setText("enter username and password");
-            } else {
+            if (username.getText().isEmpty() || password.getText().isEmpty()) {
+                message.setText("Enter username and password");
+            } else if (db.validateLogin(username.getText(), password.getText())) {
+                currentUsername = username.getText();
                 stage.setScene(SceneFactory.buildDashboardScene(stage));
+            } else {
+                message.setText("Invalid username or password");
             }
         });
         newuser.setOnAction(event -> {
             stage.setScene(SceneFactory.buildNewuserScene(stage));
         });
+
+        VBox layout = new VBox(10, title, username, password, message, login, newuser);
+        layout.setAlignment(Pos.CENTER);
+        layout.setStyle("-fx-background-color: mediumpurple;");
         return new Scene(layout, 600, 400);
     }
 
     private static Scene buildNewuserScene(Stage stage) { //braeden
+        UserDataBase db = new UserDataBase();
+        Label message = new Label();
         Label title = new Label("Create your account!");
         title.setStyle("-fx-font-size: 24px;");
         TextField username = new TextField();
@@ -88,27 +94,39 @@ public class SceneFactory {
         repeat.setStyle("-fx-font-size: 16px;");
         repeat.setMaxWidth(200);
 
-
-        Button login = new Button("Login");
-
+        Button login = new Button("Create Account");
         login.setOnAction(event -> {
-            Alert alert = new Alert(Alert.AlertType.INFORMATION);
-            alert.setTitle("Account Created");
-            alert.setContentText("Account Successfully Created");
-            alert.showAndWait();
-            Scene dashboard = SceneFactory.buildDashboardScene(stage);
-            stage.setScene(dashboard);
+            if (username.getText().equals("") || password.getText().equals("") || repeat.getText().equals("")) {
+                message.setText("Fill all fields");
+            } else if (!password.getText().equals(repeat.getText())) {
+                message.setText("Passwords do not match");
+            } else {
+                db.insertItem(username.getText(), password.getText(), 0);
+                message.setText("account created successfully!");
+                stage.setScene(SceneFactory.buildLoginScene(stage));
+            }
         });
-
         VBox layout = new VBox();
-        layout.getChildren().addAll(title, username, password, repeat, login);
 
+        layout.setSpacing(10);
+        layout.setAlignment(Pos.CENTER);
+        layout.setStyle("-fx-background-color: mediumpurple;");
+        message.setStyle("-fx-text-fill: white;");
+        layout.getChildren().addAll(title, username, password, repeat, message, login);
         return new Scene(layout, 600, 400);
     }
 
     private static Scene buildDashboardScene(Stage stage) {
-        Label title = new Label("Welcome, User!");
+        Label title = new Label("Welcome, " + currentUsername + "!");
         title.setStyle("-fx-font-size: 24px; -fx-text-fill: white;");
+        Label scoreDisplay = new Label();
+        if (lastScore>0) {
+            scoreDisplay.setText("Last Score: " + lastScore + " points!");
+            scoreDisplay.setStyle("-fx-font-size: 16px; -fx-text-fill: white;");
+        } else {
+            scoreDisplay.setText("No games played yet. Start a new game!");
+            scoreDisplay.setStyle("-fx-font-size: 16px; -fx-text-fill: white;");
+        }
 
         Button newGame = new Button("New Game");
         Button leaderboard = new Button("View Leaderboard");
@@ -140,133 +158,230 @@ public class SceneFactory {
         categories.setOnAction(e -> {
             stage.setScene(SceneFactory.buildCategories(stage));
         });
+        pastScores.setOnAction((e-> {
+            stage.setScene(SceneFactory.buildPastScoresScene(stage));
+        }));
 
         VBox layout = new VBox();
         layout.setSpacing(15);
         layout.setAlignment(Pos.CENTER);
         layout.setStyle("-fx-background-color: mediumpurple;");
-        layout.getChildren().addAll(title, newGame, leaderboard, pastScores, categories);
+        layout.getChildren().addAll(title, newGame, leaderboard, pastScores, categories, scoreDisplay);
         return new Scene(layout, 600, 400);
     }
 
-    static Scene buildGameScene(Stage stage) { //braeden
+    static Scene buildGameScene(Stage stage) {
         Validator validator = new Validator();
         String currentLetter = validator.getRandomLetter();
-        ArrayList<String> catagories = new ArrayList<>();
-        catagories.add("animals");
-        catagories.add("colors");
-        catagories.add("foods");
-        catagories.add("badHabits");
-        catagories.add("politicians");
-        catagories.add("countries");
-        catagories.add("sports");
-        catagories.add("movies");
-        catagories.add("celebrities");
-        catagories.add("cars");
+        ArrayList<String> categories = new ArrayList<>();
+
+        categories.add("animals");
+        categories.add("colors");
+        categories.add("foods");
+        categories.add("bad habits");
+        categories.add("politicians");
+        categories.add("countries");
+        categories.add("sports");
+        categories.add("movies");
+        categories.add("celebrities");
+        categories.add("cars");
+        categories.add("fruits");
+        categories.add("vegetables");
+        categories.add("holidays");
+        categories.add("book titles");
+        categories.add("song titles");
+        categories.add("occupations");
+        categories.add("brand names");
+        categories.add("things in classroom");
+        categories.add("things at beach");
+        categories.add("things that are cold");
+        categories.add("things that are hot");
+        categories.add("tv shows");
+        categories.add("girl names");
+        categories.add("boy names");
+        categories.add("cities");
+        categories.add("rivers");
+        categories.add("mountains");
+        categories.add("insects");
+        categories.add("birds");
+        categories.add("fish");
+        categories.add("flowers");
+        categories.add("furniture");
+        categories.add("kitchen items");
+        categories.add("bathroom items");
+        categories.add("tools");
+        categories.add("sports teams");
+        categories.add("school subjects");
+        categories.add("body parts");
+        categories.add("emotions");
+        categories.add("weather words");
+        categories.add("drinks");
+        categories.add("desserts");
+
+        Collections.shuffle(categories);
+
+        ArrayList<String> chosenCategories = new ArrayList<>(categories.subList(0, 10));
 
         Label title = new Label("Your Letter is " + currentLetter);
+        title.setStyle("-fx-font-size: 24px; -fx-font-weight: bold;");
+        title.setStyle("-fx-text-fill: white;");
+
+
         title.setAlignment(Pos.TOP_CENTER);
-        Label cat1 = new Label("Cat1");
+
+        Label cat1 = new Label(chosenCategories.get(0));
         TextField ans1 = new TextField("");
-        HBox one = new HBox(cat1, ans1);
+        HBox one = new HBox(20,cat1, ans1);
+        cat1.setStyle("-fx-text-fill: white;");
         one.setAlignment(Pos.CENTER);
-        Label cat2 = new Label("Cat2");
+
+        Label cat2 = new Label(chosenCategories.get(1));
         TextField ans2 = new TextField("");
-        HBox two = new HBox(cat2, ans2);
+        HBox two = new HBox(20,cat2, ans2);
+        cat2.setStyle("-fx-text-fill: white;");
         two.setAlignment(Pos.CENTER);
-        Label cat3 = new Label("Cat3");
+
+        Label cat3 = new Label(chosenCategories.get(2));
         TextField ans3 = new TextField("");
-        HBox three = new HBox(cat3, ans3);
+        cat3.setStyle("-fx-text-fill: white;");
+        HBox three = new HBox(20,cat3, ans3);
         three.setAlignment(Pos.CENTER);
-        Label cat4 = new Label("Cat4");
+
+        Label cat4 = new Label(chosenCategories.get(3));
         TextField ans4 = new TextField("");
-        HBox four = new HBox(cat4, ans4);
+        HBox four = new HBox(20,cat4, ans4);
+        cat4.setStyle("-fx-text-fill: white;");
         four.setAlignment(Pos.CENTER);
-        Label cat5 = new Label("Cat5");
+
+        Label cat5 = new Label(chosenCategories.get(4));
         TextField ans5 = new TextField("");
-        HBox five = new HBox(cat5, ans5);
+        HBox five = new HBox(20,cat5, ans5);
+        cat5.setStyle("-fx-text-fill: white;");
         five.setAlignment(Pos.CENTER);
-        Label cat6 = new Label("Cat6");
+
+        Label cat6 = new Label(chosenCategories.get(5));
         TextField ans6 = new TextField("");
-        HBox six = new HBox(cat6, ans6);
+        HBox six = new HBox(20,cat6, ans6);
+        cat6.setStyle("-fx-text-fill: white;");
         six.setAlignment(Pos.CENTER);
-        Label cat7 = new Label("Cat7");
+
+        Label cat7 = new Label(chosenCategories.get(6));
         TextField ans7 = new TextField("");
-        HBox seven = new HBox(cat7, ans7);
+        HBox seven = new HBox(20,cat7, ans7);
+        cat7.setStyle("-fx-text-fill: white;");
         seven.setAlignment(Pos.CENTER);
-        Label cat8 = new Label("Cat8");
+
+        Label cat8 = new Label(chosenCategories.get(7));
         TextField ans8 = new TextField("");
-        HBox eight = new HBox(cat8, ans8);
+        HBox eight = new HBox(20,cat8, ans8);
+        cat8.setStyle("-fx-text-fill: white;");
         eight.setAlignment(Pos.CENTER);
-        Label cat9 = new Label("Cat9");
+
+        Label cat9 = new Label(chosenCategories.get(8));
         TextField ans9 = new TextField("");
-        HBox nine = new HBox(cat9, ans9);
+        HBox nine = new HBox(20,cat9, ans9);
+        cat9.setStyle("-fx-text-fill: white;");
         nine.setAlignment(Pos.CENTER);
-        Label cat10 = new Label("Cat10");
+
+        Label cat10 = new Label(chosenCategories.get(9));
         TextField ans10 = new TextField("");
-        HBox ten = new HBox(cat10, ans10);
+        HBox ten = new HBox(20,cat10, ans10);
+        cat10.setStyle("-fx-text-fill: white;");
         ten.setAlignment(Pos.CENTER);
 
-        Label scoreLabel = new Label();
-
         Button finish = new Button("Finish");
+
         finish.setOnAction(event -> {
+
             int score = 0;
-            TextField[] userAnswer = {ans1, ans2, ans3, ans4, ans5, ans6, ans7, ans8, ans9, ans10};
+
+            TextField[] userAnswer = {ans1, ans2, ans3, ans4, ans5, ans6, ans7, ans8, ans9, ans10 };
             for (int i = 0; i < userAnswer.length; i++) {
-                if (validator.isValid(catagories.get(i), userAnswer[i].getText(), currentLetter)) {
+                if (validator.isValid(chosenCategories.get(i), userAnswer[i].getText(), currentLetter)) {
                     score += 10;
                 }
             }
-
             lastScore = score;
+            Sdb.createGame(currentUsername, currentLetter, lastScore);
+
             stage.setScene(SceneFactory.buildDashboardScene(stage));
         });
 
-        VBox layout = new VBox(title, one, two, three, four, five, six, seven, eight, nine, ten, scoreLabel, finish);
+        VBox layout = new VBox(title, one, two, three, four, five, six, seven, eight, nine, ten, finish);
         layout.setAlignment(Pos.CENTER);
+        layout.setStyle("-fx-background-color: mediumpurple; -fx-padding: 25px;");
         return new Scene(layout, 600, 400);
     }
 
     private static Scene buildLeaderboardScene(Stage stage) {
-        //kaissy
-        Label title = new Label("Leaderboard");
+        Label title = new Label("LEADERBOARD");
+        title.setStyle("-fx-font-size: 24px; -fx-font-weight: bold;");
 
-        Label rank1 = new Label("1. ");
-        Label rank2 = new Label("2. ");
-        Label rank3 = new Label("3. ");
-        Label rank4 = new Label("4. ");
-        Label rank5 = new Label("5. ");
+        TextArea leaderboardText = new TextArea();
+        leaderboardText.setEditable(false);
+        leaderboardText.setPrefHeight(300);
+        leaderboardText.setStyle("-fx-font-size: 16px; -fx-font-family: monospace;");
+
+
+        String leaderboardData = Sdb.getLeaderboard();
+        leaderboardText.setText(leaderboardData);
 
         Button backButton = new Button("Return to Dashboard");
-        Button refreshButton = new Button("Refresh");
-
-        refreshButton.setOnAction(e -> {
-            System.out.println("In first place goes to...");
-            System.out.println("In second place...");
-            System.out.println("In third...");
-        });
-
         backButton.setOnAction(e -> {
             stage.setScene(SceneFactory.buildDashboardScene(stage));
         });
 
+        Button refreshButton = new Button("Refresh");
+        refreshButton.setOnAction(e -> {
+            String refreshedData = Sdb.getLeaderboard();
+            leaderboardText.setText(refreshedData);
+        });
 
-        VBox layout = new VBox();
-        layout.getChildren().addAll(title, rank1, rank2, rank3, rank4, rank5, backButton, refreshButton);
-
+        VBox layout = new VBox(10);
+        layout.setAlignment(Pos.CENTER);
+        layout.setStyle("-fx-background-color: mediumpurple; -fx-padding: 25px;");
+        layout.getChildren().addAll(title, leaderboardText, backButton);
         return new Scene(layout, 600, 400);
     }
+    private static Scene buildPastScoresScene(Stage stage){
+        Label title = new Label ("PAST SCORES - " + currentUsername);
+        title.setStyle("-fx-font-size: 24px; -fx-font-weight: bold;");
 
-    private static Scene buildCategories(Stage stage) { // estrella
+        TextArea pastScoresText = new TextArea();
+        pastScoresText.setEditable(false);
+        pastScoresText.setPrefHeight(350);
+        pastScoresText.setStyle("-fx-font-size: 16px; -fx-font-family: monospace;");
+
+        String pastScoresData = Sdb.getPastScores(currentUsername);
+        pastScoresText.setText(pastScoresData);
+
+        Button backButton = new Button("Back to Dashboard");
+        backButton.setOnAction(e -> {
+            stage.setScene(SceneFactory.buildDashboardScene(stage));
+        });
+
+        Button refreshButton = new Button("Refresh");
+        refreshButton.setStyle("-fx-font-size: 14px; -fx-padding: 8px;");
+        refreshButton.setOnAction(e -> {
+            String refreshedData = Sdb.getPastScores(currentUsername);
+            pastScoresText.setText(refreshedData);
+        });
+
+
+        VBox layout = new VBox(10);
+        layout.setAlignment(Pos.CENTER);
+        layout.setStyle("-fx-background-color: mediumpurple; -fx-padding: 25px;");
+        layout.getChildren().addAll(title, pastScoresText, refreshButton, backButton);
+        return new Scene(layout, 600, 500);
+    }
+
+    private static Scene buildCategories (Stage stage){ // estrella
         Label title = new Label("Categories");
         TextField newCategory = new TextField();
         newCategory.setPromptText("Enter category");
 
         Button add = new Button("Add");
         Button back = new Button("Back");
-
-        // databinding
         ObservableList<String> categories = FXCollections.observableArrayList();
         ListView<String> categoryList = new ListView<>();
         categoryList.setItems(categories);
